@@ -5,6 +5,8 @@ from odoo.exceptions import ValidationError
 from odoo import models, fields, _
 import re
 
+from odoo.orm.decorators import readonly
+
 
 class RecurringSubscription(models.Model):
     _name = "recurring.subscription"
@@ -33,7 +35,9 @@ class RecurringSubscription(models.Model):
     company_id = fields.Many2one('res.company', string="Company", default=lambda self: self.env.company)
     billing_schedule_id = fields.Many2one('recurring.billing.schedule', string="Billing Schedule")
     subscription_credit_ids = fields.One2many('recurring.subscription.credit', 'recurring_subscription_id',
-                                              string='Subscription Credits')
+                                              string='Subscription Credits', readonly=False)
+    filtered_credit_ids = fields.One2many('recurring.subscription.credit', 'recurring_subscription_id',
+                                          string='Subscription Credits', compute='_compute_subscription_credit_ids')
 
     def _compute_due_date(self):
         """ By default, the due date is set 15 days from today """
@@ -52,11 +56,11 @@ class RecurringSubscription(models.Model):
 
     def action_confirm(self):
         """ Create a button in Recurring Subscription “Confirm”, when click on that button, change the state into confirmed """
-        self.state = 'confirm'
+        self.write({'state': 'confirm'})
 
     def action_cancel(self):
         """ Create a button in Recurring Subscription “Cancel”, when click on that button, change the state into cancel """
-        self.state = 'cancel'
+        self.write({'state': 'cancel'})
 
     @api.constrains('establishment')
     def _check_establishment(self):
@@ -70,4 +74,14 @@ class RecurringSubscription(models.Model):
                 if len(x) and len(y) < 3 and len(z) < 2:
                     raise ValidationError("The establishment must contain at least 3 alphabets and 3 digits")
 
-
+    @api.depends('subscription_credit_ids.state', 'subscription_credit_ids.due_date',
+                 'subscription_credit_ids.period_date')
+    def _compute_subscription_credit_ids(self):
+        """ Function to filter the subscription_credit_ids field in the recurring subscription model """
+        for record in self:
+            record.filtered_credit_ids = record.subscription_credit_ids.filtered(
+                lambda i: i.state == 'fully_approved' and
+                             i.period_date and
+                             i.due_date and
+                             i.period_date <= record.due_date
+            )

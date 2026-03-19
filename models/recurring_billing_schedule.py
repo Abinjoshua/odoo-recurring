@@ -34,21 +34,24 @@ class RecurringBillingSchedule(models.Model):
             'name': 'Recurring Subscription',
             'view_mode': 'list,form',
             'res_model': 'recurring.subscription',
-            'domain': [('id', 'in', self.recurring_subscription_ids.id)],
+            'domain': [('id', 'in', self.mapped('recurring_subscription_ids.id'))],
             'context': "{'create': False}"
         }
 
     @api.depends('recurring_subscription_ids.recurring_amount')
     def _compute_total_credit_amount(self):
+        """ Function to get the total amount of credits from the recurring subscription id"""
         for record in self:
             all_cred_amount = record.mapped('recurring_subscription_ids.recurring_amount')
-            record.total_credit_amount = sum(all_cred_amount)
+            record.update({'total_credit_amount':sum(all_cred_amount)})
 
     @api.depends('recurring_subscription_ids.customer_id')
     def _compute_total_restrict_customers(self):
+        """ Function to get the customer's from the recurring subscription id"""
         for record in self:
             all_cus = record.mapped('recurring_subscription_ids.customer_id')
-            record.restrict_customers_ids = all_cus.mapped('id')
+            print(all_cus)
+            record.update({'restrict_customers_ids': all_cus.mapped('id')})
 
     # @api.depends('recurring_subscription_ids.name')
     # def _compute_rec_sub(self):
