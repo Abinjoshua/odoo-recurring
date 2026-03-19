@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--    Main Menu   -->
+    <menuitem id="menu_recurring_subscription_root" name="Recurring Subscription"/>
+    <!--    Sub Menu without action   -->
+    <menuitem id="menu_recurring_subscription_subscriptions" name="Subscriptions"
+              parent="menu_recurring_subscription_root"/>
+    <menuitem id="menu_recurring_subscription_credits" name="Credits"
+              parent="menu_recurring_subscription_root"/>
+    <menuitem id="menu_recurring_billing_schedule" name="Billing Schedule"
+              parent="menu_recurring_subscription_root"/>
+
+    <!--    Sub Menu with action    -->
+    <menuitem id="menu_recurring_subscription_subscriptions_order" name="Order"
+              parent="menu_recurring_subscription_subscriptions"
+              action="action_recurring_subscription"/>
+    <menuitem id="menu_recurring_subscription_credit_credits" name="Credit"
+              parent="menu_recurring_subscription_credits"
+              action="action_recurring_subscription_credit"/>
+    <menuitem id="menu_recurring_billing_schedule_billing_schedule" name="Billing Schedule"
+              parent="menu_recurring_billing_schedule"
+              action="action_recurring_billing_schedule"/>
+</odoo>
