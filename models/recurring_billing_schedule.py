@@ -23,10 +23,10 @@ class RecurringBillingSchedule(models.Model):
                                                   compute="compute_recurring_subscription_count")
 
     def compute_recurring_subscription_count(self):
+        """ Function to get the number of recurring subscriptions """
         for record in self:
             record.recurring_subscription_count = self.env['recurring.subscription'].search_count(
                 [('name', '=', record.mapped('recurring_subscription_ids.name'))])
-
     def action_get_recurring_subscription(self):
         self.ensure_one()
         return {
