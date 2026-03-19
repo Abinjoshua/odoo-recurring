@@ -35,14 +35,21 @@
                             <field name="company_id"/>
                         </group>
                         <notebook>
+                            <page string="Subscription Credit">
+                                <field name="filtered_credit_ids">
+                                    <list>
+                                        <field name="recurring_subscription_id"/>
+                                        <field name="due_date"/>
+                                        <field name="period_date"/>
+                                        <field name="state"/>
+                                    </list>
+                                </field>
+                            </page>
                             <page string="Terms and Conditions">
                                 <field name="terms_and_conditions"/>
                             </page>
                             <page string="Description">
                                 <field name="description"/>
-                            </page>
-                            <page string="Subscription Credit">
-                                <field name="subscription_credit_ids"/>
                             </page>
                         </notebook>
                     </group>
@@ -80,7 +87,8 @@
                 <filter name="filter_netflix" string="Netflix" domain="[('product_id','=','Netflix')]"/>
                 <separator string="Group By"/>
                 <group>
-                    <filter string="Establishment" name="group_by_establishment" context="{'group_by':'establishment'}"/>
+                    <filter string="Establishment" name="group_by_establishment"
+                            context="{'group_by':'establishment'}"/>
                 </group>
             </search>
         </field>
