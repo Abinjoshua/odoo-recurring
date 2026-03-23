@@ -2,3 +2,4 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_recurring_subscription_recurring_subscription,access.recurring.subscription.recurring.subscription,model_recurring_subscription,base.group_user,1,1,1,1
 access_recurring_subscription_recurring_subscription_credit,access.recurring.subscription.recurring.subscription.credit,model_recurring_subscription_credit,base.group_user,1,1,1,1
 access_recurring_subscription_recurring_billing_schedule,access.recurring.subscription.recurring.billing.schedule,model_recurring_billing_schedule,base.group_user,1,1,1,1
+access_recurring_subscription_recurring_partner_account,access.recurring.subscription.recurring.partner.account,model_recurring_partner_account,base.group_user,1,1,1,1
