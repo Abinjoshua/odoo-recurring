@@ -5,9 +5,6 @@ from odoo.exceptions import ValidationError
 from odoo import models, fields, _
 import re
 
-from odoo.orm.decorators import readonly
-
-
 class RecurringSubscription(models.Model):
     _name = "recurring.subscription"
     _description = "Details of Recurring Sub"

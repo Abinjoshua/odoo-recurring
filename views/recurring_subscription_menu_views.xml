@@ -9,6 +9,8 @@
               parent="menu_recurring_subscription_root"/>
     <menuitem id="menu_recurring_billing_schedule" name="Billing Schedule"
               parent="menu_recurring_subscription_root"/>
+    <menuitem id="menu_recurring_partner_account" name="Partner"
+              parent="menu_recurring_subscription_root"/>
 
     <!--    Sub Menu with action    -->
     <menuitem id="menu_recurring_subscription_subscriptions_order" name="Order"
@@ -20,4 +22,7 @@
     <menuitem id="menu_recurring_billing_schedule_billing_schedule" name="Billing Schedule"
               parent="menu_recurring_billing_schedule"
               action="action_recurring_billing_schedule"/>
+    <menuitem id="menu_recurring_partner_account_partner" name="Partner"
+              parent="menu_recurring_partner_account"
+              action="action_recurring_partner_account"/>
 </odoo>

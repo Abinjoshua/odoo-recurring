@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!--    create form view-->
+    <!--    Form view-->
     <record id="recurring_subscription_credit_views_form" model="ir.ui.view">
         <field name="name">recurring.subscription.credit.views.form</field>
         <field name="model">recurring.subscription.credit</field>
