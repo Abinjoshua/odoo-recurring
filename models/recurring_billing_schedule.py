@@ -2,7 +2,6 @@
 from odoo import models, fields
 from odoo import api
 
-
 class RecurringBillingSchedule(models.Model):
     _name = "recurring.billing.schedule"
     _description = "Recurring Subscription Billing Schedule"
@@ -21,6 +20,10 @@ class RecurringBillingSchedule(models.Model):
     date_end = fields.Datetime()
     recurring_subscription_count = fields.Integer(string="Recurring Subscription Count", default=0,
                                                   compute="compute_recurring_subscription_count")
+    credit_ids = fields.One2many('recurring.subscription.credit', 'billing_schedule_id', string="Credits", compute='_compute_credit_ids')
+    filtered_credit_ids = fields.One2many('recurring.subscription.credit', 'billing_schedule_id', string="Credits",compute="_compute_billing_schedule")
+    credit_amount = fields.Monetary(string="Credit Amount", currency_field="currency_id", default=0, compute="_compute_credit_amount")
+    company_id = fields.Many2one('res.company', string="Company", default=lambda self: self.env.company)
 
     def compute_recurring_subscription_count(self):
         """ Function to get the number of recurring subscriptions """
@@ -50,11 +53,27 @@ class RecurringBillingSchedule(models.Model):
         """ Function to get the customer's from the recurring subscription id"""
         for record in self:
             all_cus = record.mapped('recurring_subscription_ids.customer_id')
-            print(all_cus)
             record.update({'restrict_customers_ids': all_cus.mapped('id')})
 
-    # @api.depends('recurring_subscription_ids.name')
-    # def _compute_rec_sub(self):
-    #     for record in self:
-    #         all_rec = record.mapped('recurring_subscription_ids.name')
-    #         record.recurring_subscription_ids = all_rec.mapped('id')
+    @api.depends('credit_ids.state')
+    def _compute_billing_schedule(self):
+        print('hello')
+        """ Function to filter the billing_schedule_ids field in the billing schedule model """
+        for record in self:
+            record.filtered_credit_ids = record.credit_ids.filtered(
+                lambda x : x.state == 'fully_approved'
+            )
+
+    @api.depends('filtered_credit_ids.credit_amount')
+    def _compute_credit_amount(self):
+        print('test')
+        for record in self:
+            all_credit_amount = record.mapped('filtered_credit_ids.credit_amount')
+            record.update({'credit_amount':sum(all_credit_amount)})
+
+    @api.depends('recurring_subscription_ids')
+    def _compute_credit_ids(self):
+        for record in self:
+            all_cred_ids = record.mapped('recurring_subscription_ids.id')
+            record.update({'credit_ids': all_cred_ids})
+

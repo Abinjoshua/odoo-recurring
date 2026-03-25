@@ -5,6 +5,7 @@ from odoo.exceptions import ValidationError
 from odoo import models, fields, _
 import re
 
+
 class RecurringSubscription(models.Model):
     _name = "recurring.subscription"
     _description = "Details of Recurring Sub"
@@ -17,7 +18,7 @@ class RecurringSubscription(models.Model):
     due_date = fields.Date(string="Due Date", compute="_compute_due_date")
     next_billing = fields.Date(string="Next Billing")
     is_lead = fields.Boolean(string="Lead")
-    customer_id = fields.Many2one('res.partner', string="Customer", required=True, tracking=True)
+    customer_id = fields.Many2one('res.partner', string="Customer", tracking=True, compute='_compute_customer_ids')
     description = fields.Char(string="Description")
     terms_and_conditions = fields.Html(string="Terms and Conditions")
     product_id = fields.Many2one('product.template', string="Product", required=True, tracking=True)
@@ -54,6 +55,10 @@ class RecurringSubscription(models.Model):
     def action_confirm(self):
         """ Create a button in Recurring Subscription “Confirm”, when click on that button, change the state into confirmed """
         self.write({'state': 'confirm'})
+        for i in self:
+            res = i.customer_id.mapped('establishment.id')
+            print(res)
+            print(self.establishment)
 
     def action_cancel(self):
         """ Create a button in Recurring Subscription “Cancel”, when click on that button, change the state into cancel """
@@ -78,7 +83,27 @@ class RecurringSubscription(models.Model):
         for record in self:
             record.filtered_credit_ids = record.subscription_credit_ids.filtered(
                 lambda i: i.state == 'fully_approved' and
-                             i.period_date and
-                             i.due_date and
-                             i.period_date <= record.due_date
+                          i.period_date and
+                          i.due_date and
+                          i.period_date <= record.due_date
             )
+
+    @api.depends('establishment', 'customer_id.establishment')
+    def _compute_customer_ids(self):
+        """ Function to filter the customer_ids field in the recurring subscription model """
+        for record in self:
+            record.customer_id = self.env['res.partner'].filtered(
+                lambda i: i.establishment and
+                          record.establishment and
+                          i.establishment == record.establishment
+            )
+
+    # @api.depends('establishment', 'customer_id.establishment', 'customer_id', 'customer_id.partner_id')
+    # def _compute_customer_id(self):
+    #     """ Function to find the customer_id field in the recurring subscription model """
+    #     for record in self:
+    #         record.customer_id = record.customer_id.filtered(
+    #             lambda i: i.establishment == record.establishment and
+    #                       i.customer_id == record.customer_id.id
+    #
+    #         )

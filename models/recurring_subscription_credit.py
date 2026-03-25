@@ -25,6 +25,7 @@ class RecurringSubscriptionCredit(models.Model):
     due_date = fields.Date(string="Due Date", compute="_compute_due_date")
     credit_amount = fields.Float(string="Credit Amount", default=1)
     period_date = fields.Date(string="Period Date")
+    billing_schedule_id = fields.Many2one('recurring.billing.schedule', string="Billing Schedule")
 
     @api.constrains('establishment')
     def _check_establishment(self):
@@ -48,3 +49,5 @@ class RecurringSubscriptionCredit(models.Model):
             if record in self:
                 if record.credit_amount == 0 or record.credit_amount > record.recurring_amount:
                     record.recurring_subscription_id = None
+
+
