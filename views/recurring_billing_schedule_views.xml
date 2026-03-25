@@ -32,7 +32,21 @@
                             <field name="date_end" widget="daterange" string="To"
                                    class="oe_inline" options="{'related_start_date': 'date_begin'}"/>
                             <field name="currency_id" invisible="1"/>
+                            <field name="credit_amount"/>
+                            <field name="company_id"/>
                         </group>
+                        <notebook>
+                            <page string="Credit">
+                                <field name="filtered_credit_ids">
+                                    <list>
+                                        <field name="recurring_subscription_id"/>
+                                        <field name="partner_id"/>
+                                        <field name="establishment"/>
+                                        <field name="credit_amount"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
                     </group>
                 </sheet>
                 <chatter/>

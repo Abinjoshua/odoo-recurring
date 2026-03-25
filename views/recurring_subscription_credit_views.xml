@@ -23,6 +23,7 @@
                             <field name="due_date"/>
                             <field name="period_date"/>
                             <field name="credit_amount"/>
+                            <field name="billing_schedule_id"/>
                         </group>
                     </group>
                 </sheet>

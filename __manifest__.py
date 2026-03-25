@@ -9,7 +9,7 @@
     'category': 'Recurring Subscription',
     'sequence': 1,
     'application': True,
-    'depends': ['base','product', 'mail','contacts'],
+    'depends': ['base','product', 'mail','contacts','crm'],
     'auto_install': True,
     'data':
         ["security/ir.model.access.csv",
@@ -19,6 +19,7 @@
          "views/recurring_billing_schedule_views.xml",
          "views/recurring_partner_account.xml",
          "views/res_partner_views.xml",
+         "views/crm_lead_views.xml",
          "views/recurring_subscription_menu_views.xml"
          ],
     'demo':['demo/subscription_product_demo.xml']
