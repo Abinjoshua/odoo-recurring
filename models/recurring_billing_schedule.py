@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields
+from odoo import models, fields, Command
 from odoo import api
+
 
 class RecurringBillingSchedule(models.Model):
     _name = "recurring.billing.schedule"
@@ -20,9 +21,12 @@ class RecurringBillingSchedule(models.Model):
     date_end = fields.Datetime()
     recurring_subscription_count = fields.Integer(string="Recurring Subscription Count", default=0,
                                                   compute="compute_recurring_subscription_count")
-    credit_ids = fields.One2many('recurring.subscription.credit', 'billing_schedule_id', string="Credits", compute='_compute_credit_ids')
-    filtered_credit_ids = fields.One2many('recurring.subscription.credit', 'billing_schedule_id', string="Credits",compute="_compute_billing_schedule")
-    credit_amount = fields.Monetary(string="Credit Amount", currency_field="currency_id", default=0, compute="_compute_credit_amount")
+    credit_ids = fields.One2many('recurring.subscription.credit', 'billing_schedule_id', string="Credits",
+                                 compute='_compute_credit_ids')
+    filtered_credit_ids = fields.One2many('recurring.subscription.credit', 'billing_schedule_id', string="Credits",
+                                          compute="_compute_billing_schedule")
+    credit_amount = fields.Monetary(string="Credit Amount", currency_field="currency_id", default=0,
+                                    compute="_compute_credit_amount")
     company_id = fields.Many2one('res.company', string="Company", default=lambda self: self.env.company)
 
     def compute_recurring_subscription_count(self):
@@ -46,7 +50,7 @@ class RecurringBillingSchedule(models.Model):
         """ Function to get the total amount of credits from the recurring subscription id"""
         for record in self:
             all_cred_amount = record.mapped('recurring_subscription_ids.recurring_amount')
-            record.update({'total_credit_amount':sum(all_cred_amount)})
+            record.update({'total_credit_amount': sum(all_cred_amount)})
 
     @api.depends('recurring_subscription_ids.customer_id')
     def _compute_total_restrict_customers(self):

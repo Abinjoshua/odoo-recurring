@@ -6,6 +6,9 @@
         <field name="model">recurring.billing.schedule</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <button name="action_create_invoice" type="object" string="Create Invoice"/>
+                </header>
                 <sheet>
                     <!--        smart button section        -->
                     <div name="button_box" position="inside">

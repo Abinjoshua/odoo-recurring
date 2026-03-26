@@ -18,7 +18,7 @@ class RecurringSubscription(models.Model):
     due_date = fields.Date(string="Due Date", compute="_compute_due_date")
     next_billing = fields.Date(string="Next Billing")
     is_lead = fields.Boolean(string="Lead")
-    customer_id = fields.Many2one('res.partner', string="Customer", tracking=True, compute='_compute_customer_ids')
+    customer_id = fields.Many2one('res.partner', string="Customer", tracking=True)
     description = fields.Char(string="Description")
     terms_and_conditions = fields.Html(string="Terms and Conditions")
     product_id = fields.Many2one('product.template', string="Product", required=True, tracking=True)
@@ -55,10 +55,6 @@ class RecurringSubscription(models.Model):
     def action_confirm(self):
         """ Create a button in Recurring Subscription “Confirm”, when click on that button, change the state into confirmed """
         self.write({'state': 'confirm'})
-        for i in self:
-            res = i.customer_id.mapped('establishment.id')
-            print(res)
-            print(self.establishment)
 
     def action_cancel(self):
         """ Create a button in Recurring Subscription “Cancel”, when click on that button, change the state into cancel """
@@ -72,9 +68,12 @@ class RecurringSubscription(models.Model):
                 x = re.findall('[a-zA-Z]', record.establishment)
                 y = re.findall('[0-9]', record.establishment)
                 z = re.findall('[^a-zA-Z0-9]', record.establishment)
-                print(x, y, z)
-                if len(x) and len(y) < 3 and len(z) < 2:
-                    raise ValidationError("The establishment must contain at least 3 alphabets and 3 digits")
+                if len(z) < 2:
+                    raise ValidationError("The establishment must contain at least 2 special characters")
+                if len(x) < 3:
+                    raise ValidationError("The establishment must contain at least 3 characters")
+                if len(y) < 3:
+                    raise ValidationError("The establishment must contain at least 3 digits")
 
     @api.depends('subscription_credit_ids.state', 'subscription_credit_ids.due_date',
                  'subscription_credit_ids.period_date')
@@ -88,22 +87,15 @@ class RecurringSubscription(models.Model):
                           i.period_date <= record.due_date
             )
 
-    @api.depends('establishment', 'customer_id.establishment')
+    @api.onchange('establishment')
     def _compute_customer_ids(self):
         """ Function to filter the customer_ids field in the recurring subscription model """
         for record in self:
-            record.customer_id = self.env['res.partner'].filtered(
-                lambda i: i.establishment and
-                          record.establishment and
-                          i.establishment == record.establishment
-            )
+            if record.establishment:
+                partner = self.env['res.partner'].search([('establishment', '=', record.establishment)])
+                if partner:
+                    record.customer_id = partner.id
+                else:
+                    raise ValidationError("Partner Not Found")
 
-    # @api.depends('establishment', 'customer_id.establishment', 'customer_id', 'customer_id.partner_id')
-    # def _compute_customer_id(self):
-    #     """ Function to find the customer_id field in the recurring subscription model """
-    #     for record in self:
-    #         record.customer_id = record.customer_id.filtered(
-    #             lambda i: i.establishment == record.establishment and
-    #                       i.customer_id == record.customer_id.id
-    #
-    #         )
+
