@@ -2,6 +2,7 @@
 {
     'name': "Recurring Subscription",
     'version': "1.0",
+    'licence': "LGPL-3",
     'summary': """"Recurring Subscription designed to automate billing, manage customer lifecycles, and reduce churn""",
     'description': """Recurring Subscription designed to automate billing, manage customer lifecycles, and reduce churn(description)""",
     'author': "Cybrosys",

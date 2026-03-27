@@ -5,7 +5,6 @@ from odoo.exceptions import ValidationError
 from odoo import models, fields, _
 import re
 
-
 class RecurringSubscription(models.Model):
     _name = "recurring.subscription"
     _description = "Details of Recurring Sub"
@@ -21,7 +20,7 @@ class RecurringSubscription(models.Model):
     customer_id = fields.Many2one('res.partner', string="Customer", tracking=True)
     description = fields.Char(string="Description")
     terms_and_conditions = fields.Html(string="Terms and Conditions")
-    product_id = fields.Many2one('product.template', string="Product", required=True, tracking=True)
+    product_id = fields.Many2one('product.product', string="Product", required=True, tracking=True)
     currency_id = fields.Many2one('res.currency', string="Currency", default=1)
     recurring_amount = fields.Monetary(string="Recurring Amount", currency_field="currency_id", required=True,
                                        default=1)

@@ -47,7 +47,6 @@ class ResPartner(models.Model):
                 x = re.findall('[a-zA-Z]', record.establishment)
                 y = re.findall('[0-9]', record.establishment)
                 z = re.findall('[^a-zA-Z0-9]', record.establishment)
-                print(x, y, z)
                 if len(z) < 2:
                     raise ValidationError("The establishment must contain at least 2 special characters")
                 if len(x) < 3:
