@@ -34,7 +34,9 @@ class RecurringSubscription(models.Model):
     subscription_credit_ids = fields.One2many('recurring.subscription.credit', 'recurring_subscription_id',
                                               string='Subscription Credits', readonly=False)
     filtered_credit_ids = fields.One2many('recurring.subscription.credit', 'recurring_subscription_id',
-                                          string='Subscription Credits', compute='_compute_subscription_credit_ids')
+                                          string='Subscription Credits', compute='filtered_credit_ids')
+    # filtered_credit_amount = fields.One2many('recurring.subscription.credit', 'recurring_subscription_id',
+    #                                       string='Subscription Credits', compute='filtered_credit_amount')
 
     def _compute_due_date(self):
         """ By default, the due date is set 15 days from today """
@@ -86,8 +88,15 @@ class RecurringSubscription(models.Model):
                           i.period_date <= record.due_date
             )
 
+    # @api.depends('filtered_credit_ids.recurring_amount', 'filtered_credit_ids.credit_amount')
+    # def _compute_filtered_credit_amount(self):
+    #     """ Function to filter the subscription_credit_ids field in the recurring subscription model """
+    #     for record in self:
+    #         if record.filtered_credit_ids.recurring_amount == record.filtered_credit_ids.credit_amount:
+    #             record.filtered_credit_amount = record.filtered_credit_ids.credit_amount
+
     @api.onchange('establishment')
-    def _compute_customer_ids(self):
+    def _onchange_customer_ids(self):
         """ Function to filter the customer_ids field in the recurring subscription model """
         for record in self:
             if record.establishment:
@@ -97,4 +106,11 @@ class RecurringSubscription(models.Model):
                 else:
                     raise ValidationError("Partner Not Found")
 
-
+    # @api.onchange('state')
+    # def _onchange_send_mail(self):
+    # # def action_send_mail(self):
+    #     print('working')
+    #     for record in self:
+    #         template = self.env.ref(
+    #             'recurring_subscription.email_template_recurring_done')
+    #         template.send_mail(record.id, force_send=True)

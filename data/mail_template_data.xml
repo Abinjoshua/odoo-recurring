@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+   <record id="email_template_recurring_done" model="mail.template">
+       <field name="name">Recurring Subscription Done</field>
+       <field name="model_id" ref="recurring_subscription.model_recurring_subscription"/>
+       <field name="subject">Recurring Subscription Done</field>
+       <field name="email_from">{{user.email}}</field>
+       <field name="email_to">{{object.customer_id.email}}</field>
+       <field name="body_html" type="html">
+               <p>Hi <t t-out="object.name"/>,</p>
+               <p>This is a reminder to let you know the subscription is done.</p>
+               <p><strong>Hope you'll continue our subscription.</strong></p>
+               <br/>
+               <p>Best regards,<br/>Cybrosys Team</p>
+       </field>
+   </record>
+</odoo>

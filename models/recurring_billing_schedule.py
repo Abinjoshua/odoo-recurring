@@ -66,8 +66,7 @@ class RecurringBillingSchedule(models.Model):
         """ Function to filter the billing_schedule_ids field in the billing schedule model """
         for record in self:
             record.filtered_credit_ids = record.credit_ids.filtered(
-                lambda x: x.state == 'fully_approved' and
-                x.recurring_subscription_id in self.mapped('recurring_subscription_ids')
+                lambda x: x.state == 'fully_approved'
             )
 
     @api.depends('filtered_credit_ids.credit_amount')
@@ -79,22 +78,27 @@ class RecurringBillingSchedule(models.Model):
     @api.depends('recurring_subscription_ids')
     def _compute_credit_ids(self):
         for record in self:
-            all_cred_ids = record.mapped('recurring_subscription_ids.id')
+            # record.mapped('recurring_subscription_ids.id')
+            all_cred_ids = self.env['recurring.subscription.credit'].search([('recurring_subscription_id.name', 'in', record.mapped('recurring_subscription_ids.name'))])
             record.update({'credit_ids': all_cred_ids})
 
     def action_create_invoice(self):
         """ Create a button in Recurring Subscription “Confirm”, when click on that button, change the state into confirmed """
-        for i in self.recurring_subscription_ids:
+        for sub in self.recurring_subscription_ids:
             for record in self:
                 self.env['account.move'].create({
                     'move_type': 'out_invoice',
-                    'partner_id': i.customer_id.id,
+                    'partner_id': sub.customer_id.id,
                     'invoice_date': fields.Date.today(),
                     'invoice_line_ids': [
                         Command.create({
                             'name': record.name,
                             'quantity': 1,
-                            'product_id': i.product_id.id,
+                            'product_id': sub.product_id.id,
+                        }),
+                        Command.create({
+                            'price_unit': sub.subscription_credit_ids.credit_amount,
+                            'quantity': 3,
                         })
                     ],
 

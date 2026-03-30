@@ -17,6 +17,7 @@
          "views/recurring_subscription_views.xml",
          "views/recurring_subscription_credit_views.xml",
          "data/recurring_subscription_sequence.xml",
+         "data/mail_template_data.xml",
          "views/recurring_billing_schedule_views.xml",
          "views/recurring_partner_account.xml",
          "views/res_partner_views.xml",
