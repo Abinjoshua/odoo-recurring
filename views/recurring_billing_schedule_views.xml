@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_create_invoice" type="object" string="Create Invoice"/>
+                    <button name="action_create_invoice" type="object" string="Create Invoice" class="btn-primary"/>
                 </header>
                 <sheet>
                     <!--        smart button section        -->

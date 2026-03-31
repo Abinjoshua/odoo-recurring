@@ -32,11 +32,11 @@ class RecurringSubscription(models.Model):
     company_id = fields.Many2one('res.company', string="Company", default=lambda self: self.env.company)
     billing_schedule_id = fields.Many2one('recurring.billing.schedule', string="Billing Schedule")
     subscription_credit_ids = fields.One2many('recurring.subscription.credit', 'recurring_subscription_id',
-                                              string='Subscription Credits', readonly=False)
-    filtered_credit_ids = fields.One2many('recurring.subscription.credit', 'recurring_subscription_id',
-                                          string='Subscription Credits', compute='filtered_credit_ids')
+                                              string='Subscription Credits', readonly=False, compute='_compute_subscription_credit_ids')
+    # filtered_credit_ids = fields.One2many('recurring.subscription.credit', 'recurring_subscription_id',
+    #                                       string='Subscription Credits', compute='_compute_filtered_credit_ids')
     # filtered_credit_amount = fields.One2many('recurring.subscription.credit', 'recurring_subscription_id',
-    #                                       string='Subscription Credits', compute='filtered_credit_amount')
+    #                                       string='Credits Amount', compute='_compute_filtered_credit_amount')
 
     def _compute_due_date(self):
         """ By default, the due date is set 15 days from today """
@@ -81,19 +81,19 @@ class RecurringSubscription(models.Model):
     def _compute_subscription_credit_ids(self):
         """ Function to filter the subscription_credit_ids field in the recurring subscription model """
         for record in self:
-            record.filtered_credit_ids = record.subscription_credit_ids.filtered(
-                lambda i: i.state == 'fully_approved' and
-                          i.period_date and
-                          i.due_date and
-                          i.period_date <= record.due_date
-            )
+            record.subscription_credit_ids = self.env['recurring.subscription.credit'].search(
+                [('state', '=', ['fully_approved']),
+                 ('recurring_subscription_id.id','=',record.id),
+                 ('period_date','<=',record.due_date)])
 
     # @api.depends('filtered_credit_ids.recurring_amount', 'filtered_credit_ids.credit_amount')
     # def _compute_filtered_credit_amount(self):
     #     """ Function to filter the subscription_credit_ids field in the recurring subscription model """
     #     for record in self:
-    #         if record.filtered_credit_ids.recurring_amount == record.filtered_credit_ids.credit_amount:
-    #             record.filtered_credit_amount = record.filtered_credit_ids.credit_amount
+    #         # if record.filtered_credit_ids.recurring_amount == record.filtered_credit_ids.credit_amount:
+    #         record.filtered_credit_amount = record.filtered_credit_ids.filtered(
+    #             lambda rec: rec.credit_amount == rec.recurring_amount
+    #         )
 
     @api.onchange('establishment')
     def _onchange_customer_ids(self):

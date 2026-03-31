@@ -7,8 +7,8 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_confirm" type="object" string="Confirm" invisible="state=='confirm'"/>
-                    <button name="action_cancel" type="object" string="Cancel" invisible="state=='cancel'"/>
+                    <button name="action_confirm" type="object" string="Confirm" invisible="state=='confirm'" class="btn-primary"/>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state=='cancel'" class="btn-danger"/>
 <!--                    <button name="action_send_mail" type="object" string="Cancel"/>-->
                     <field name="state" widget="statusbar" options="{'clickable':1}"/>
                 </header>
@@ -21,7 +21,7 @@
                     <group>
                         <group>
                             <field name="name"/>
-                            <field name="customer_id"/>
+                            <field name="customer_id" readonly="1" force_save="1"/>
                             <field name="establishment"/>
                             <field name="next_billing"/>
                             <field name="currency_id"/>
@@ -37,12 +37,14 @@
                         </group>
                         <notebook>
                             <page string="Subscription Credit">
-                                <field name="filtered_credit_ids">
+                                <field name="subscription_credit_ids">
                                     <list>
                                         <field name="recurring_subscription_id"/>
                                         <field name="due_date"/>
                                         <field name="period_date"/>
                                         <field name="state"/>
+                                        <field name="credit_amount"/>
+                                        <field name="recurring_amount"/>
                                     </list>
                                 </field>
                             </page>

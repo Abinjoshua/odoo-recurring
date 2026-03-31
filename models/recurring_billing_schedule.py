@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from itertools import product
-
 from odoo import models, fields, Command
 from odoo import api
+
 
 class RecurringBillingSchedule(models.Model):
     _name = "recurring.billing.schedule"
@@ -79,13 +78,16 @@ class RecurringBillingSchedule(models.Model):
     def _compute_credit_ids(self):
         for record in self:
             # record.mapped('recurring_subscription_ids.id')
-            all_cred_ids = self.env['recurring.subscription.credit'].search([('recurring_subscription_id.name', 'in', record.mapped('recurring_subscription_ids.name'))])
+            all_cred_ids = self.env['recurring.subscription.credit'].search(
+                [('recurring_subscription_id.name', 'in', record.mapped('recurring_subscription_ids.name'))])
             record.update({'credit_ids': all_cred_ids})
 
     def action_create_invoice(self):
         """ Create a button in Recurring Subscription “Confirm”, when click on that button, change the state into confirmed """
-        for sub in self.recurring_subscription_ids:
-            for record in self:
+        for record in self:
+            for sub in self.recurring_subscription_ids:
+                max = sub.mapped('subscription_credit_ids.credit_amount')
+                print(max)
                 self.env['account.move'].create({
                     'move_type': 'out_invoice',
                     'partner_id': sub.customer_id.id,
@@ -97,10 +99,10 @@ class RecurringBillingSchedule(models.Model):
                             'product_id': sub.product_id.id,
                         }),
                         Command.create({
-                            'price_unit': sub.subscription_credit_ids.credit_amount,
-                            'quantity': 3,
+                            'name': record.name+' Credit',
+                            # 'price_unit': max(max),
+                            'quantity': 1,
                         })
                     ],
 
                 })
-
