@@ -4,7 +4,7 @@
        <field name="name">Recurring Subscription Done</field>
        <field name="model_id" ref="recurring_subscription.model_recurring_subscription"/>
        <field name="subject">Recurring Subscription Done</field>
-       <field name="email_from">{{user.email}}</field>
+       <field name="email_from">{{ object.company_id.email}}</field>
        <field name="email_to">{{object.customer_id.email}}</field>
        <field name="body_html" type="html">
                <p>Hi <t t-out="object.name"/>,</p>

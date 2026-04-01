@@ -22,6 +22,7 @@
          "views/recurring_partner_account.xml",
          "views/res_partner_views.xml",
          "views/crm_lead_views.xml",
+         "views/account_move_views.xml",
          "views/recurring_subscription_menu_views.xml"
          ],
     'demo':['demo/subscription_product_demo.xml']

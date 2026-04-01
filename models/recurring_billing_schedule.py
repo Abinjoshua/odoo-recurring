@@ -28,6 +28,8 @@ class RecurringBillingSchedule(models.Model):
     credit_amount = fields.Monetary(string="Credit Amount", currency_field="currency_id", default=0,
                                     compute="_compute_credit_amount")
     company_id = fields.Many2one('res.company', string="Company", default=lambda self: self.env.company)
+    invoice_count = fields.Integer(string="Invoice Count",default=0, compute="_compute_total_invoice_count")
+    active = fields.Boolean(default=True)
 
     def compute_recurring_subscription_count(self):
         """ Function to get the number of recurring subscriptions """
@@ -43,6 +45,23 @@ class RecurringBillingSchedule(models.Model):
             'view_mode': 'list,form',
             'res_model': 'recurring.subscription',
             'domain': [('id', 'in', self.mapped('recurring_subscription_ids.id'))],
+            'context': "{'create': False}"
+        }
+    def _compute_total_invoice_count(self):
+        """ Function to get the number of recurring subscriptions """
+        for record in self:
+            record.invoice_count = self.env['account.move'].search_count(
+                [('billing_schedule', 'in', self.name)])
+            print(record.invoice_count)
+
+    def action_get_invoices(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Invoices',
+            'view_mode': 'list,form',
+            'res_model': 'account.move',
+            'domain': [('billing_schedule', 'in', self.name)],
             'context': "{'create': False}"
         }
 
@@ -86,11 +105,14 @@ class RecurringBillingSchedule(models.Model):
         """ Create a button in Recurring Subscription “Confirm”, when click on that button, change the state into confirmed """
         for record in self:
             for sub in self.recurring_subscription_ids:
-                max = sub.mapped('subscription_credit_ids.credit_amount')
-                print(max)
+                max_cred_amount = 0
+                cred_amount = sub.mapped('subscription_credit_ids.credit_amount')
+                for i in cred_amount:
+                    i+max_cred_amount
                 self.env['account.move'].create({
                     'move_type': 'out_invoice',
                     'partner_id': sub.customer_id.id,
+                    'billing_schedule': record.name,
                     'invoice_date': fields.Date.today(),
                     'invoice_line_ids': [
                         Command.create({
@@ -99,10 +121,11 @@ class RecurringBillingSchedule(models.Model):
                             'product_id': sub.product_id.id,
                         }),
                         Command.create({
-                            'name': record.name+' Credit',
-                            # 'price_unit': max(max),
+                            'name': record.name + ' Credit',
+                            'price_unit': max(cred_amount),
                             'quantity': 1,
                         })
                     ],
 
                 })
+            record.active = False

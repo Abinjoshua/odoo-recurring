@@ -14,7 +14,7 @@ class RecurringSubscription(models.Model):
     name = fields.Char(string="Name", required=True, tracking=True)
     establishment = fields.Char(string="Establishment", required=True)
     date = fields.Date(string="Date", default=fields.Date.today)
-    due_date = fields.Date(string="Due Date", compute="_compute_due_date")
+    due_date = fields.Date(string="Date", compute='_compute_due_date')
     next_billing = fields.Date(string="Next Billing")
     is_lead = fields.Boolean(string="Lead")
     customer_id = fields.Many2one('res.partner', string="Customer", tracking=True)
@@ -108,9 +108,10 @@ class RecurringSubscription(models.Model):
 
     # @api.onchange('state')
     # def _onchange_send_mail(self):
-    # # def action_send_mail(self):
-    #     print('working')
-    #     for record in self:
-    #         template = self.env.ref(
-    #             'recurring_subscription.email_template_recurring_done')
-    #         template.send_mail(record.id, force_send=True)
+    def action_send_mail(self):
+        print('working')
+        for record in self:
+            if record.state == 'done':
+                template = self.env.ref(
+                    'recurring_subscription.email_template_recurring_done')
+                template.send_mail(record.id, force_send=True)
