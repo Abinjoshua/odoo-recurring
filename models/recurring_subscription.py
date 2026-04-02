@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-from datetime import timedelta
+from dateutil.relativedelta import relativedelta
 from odoo import api
 from odoo.exceptions import ValidationError
-from odoo import models, fields, _
+from odoo import models, fields, _, Command
 import re
+
 
 class RecurringSubscription(models.Model):
     _name = "recurring.subscription"
@@ -14,7 +15,7 @@ class RecurringSubscription(models.Model):
     name = fields.Char(string="Name", required=True, tracking=True)
     establishment = fields.Char(string="Establishment", required=True)
     date = fields.Date(string="Date", default=fields.Date.today)
-    due_date = fields.Date(string="Date", compute='_compute_due_date')
+    due_date = fields.Date(default=fields.Date.today() + relativedelta(days=+15))
     next_billing = fields.Date(string="Next Billing")
     is_lead = fields.Boolean(string="Lead")
     customer_id = fields.Many2one('res.partner', string="Customer", tracking=True)
@@ -32,17 +33,19 @@ class RecurringSubscription(models.Model):
     company_id = fields.Many2one('res.company', string="Company", default=lambda self: self.env.company)
     billing_schedule_id = fields.Many2one('recurring.billing.schedule', string="Billing Schedule")
     subscription_credit_ids = fields.One2many('recurring.subscription.credit', 'recurring_subscription_id',
-                                              string='Subscription Credits', readonly=False, compute='_compute_subscription_credit_ids')
+                                              string='Subscription Credits', readonly=False,
+                                              compute='_compute_subscription_credit_ids')
+
     # filtered_credit_ids = fields.One2many('recurring.subscription.credit', 'recurring_subscription_id',
     #                                       string='Subscription Credits', compute='_compute_filtered_credit_ids')
     # filtered_credit_amount = fields.One2many('recurring.subscription.credit', 'recurring_subscription_id',
     #                                       string='Credits Amount', compute='_compute_filtered_credit_amount')
 
-    def _compute_due_date(self):
-        """ By default, the due date is set 15 days from today """
-        for record in self:
-            if record in self:
-                record.due_date = fields.Date.today() + timedelta(days=15)
+    # def _compute_due_date(self):
+    #     """ By default, the due date is set 15 days from today """
+    #     for record in self:
+    #         if record in self:
+    #             record.due_date = fields.Date.today() + timedelta(days=15)
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -83,8 +86,8 @@ class RecurringSubscription(models.Model):
         for record in self:
             record.subscription_credit_ids = self.env['recurring.subscription.credit'].search(
                 [('state', '=', ['fully_approved']),
-                 ('recurring_subscription_id.id','=',record.id),
-                 ('period_date','<=',record.due_date)])
+                 ('recurring_subscription_id.id', '=', record.id),
+                 ('period_date', '<=', record.due_date)])
 
     # @api.depends('filtered_credit_ids.recurring_amount', 'filtered_credit_ids.credit_amount')
     # def _compute_filtered_credit_amount(self):
@@ -106,12 +109,34 @@ class RecurringSubscription(models.Model):
                 else:
                     raise ValidationError("Partner Not Found")
 
-    # @api.onchange('state')
-    # def _onchange_send_mail(self):
-    def action_send_mail(self):
+    @api.onchange('state')
+    def _onchange_send_mail(self):
+        # def action_send_mail(self):
         print('working')
         for record in self:
             if record.state == 'done':
+                email_values = {'email_to': record.customer_id.email}
                 template = self.env.ref(
                     'recurring_subscription.email_template_recurring_done')
-                template.send_mail(record.id, force_send=True)
+                template.send_mail(record.id, force_send=True, email_values=email_values)
+
+    def action_create_invoice(self):
+        """ Create a button in Recurring Subscription “Confirm”, when click on that button, change the state into confirmed """
+        print('hello')
+        # if self.state == 'confirmed' and self.due_date < fields.Date.today():
+        to_invoice = self.env['recurring.subscription'].search([('state', '=', 'confirm'),('due_date', '<=', fields.Date.today())])
+        for record in to_invoice:
+            self.env['account.move'].create({
+                'move_type': 'out_invoice',
+                'partner_id': record.customer_id.id,
+                'billing_schedule': record.name,
+                'invoice_date': fields.Date.today(),
+                'invoice_line_ids': [
+                    Command.create({
+                        'name': record.name,
+                        'quantity': 1,
+                        'product_id': record.product_id.id,
+                    }),
+                ],
+
+            })

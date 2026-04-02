@@ -45,6 +45,7 @@
                             <field name="currency_id" invisible="1"/>
                             <field name="credit_amount"/>
                             <field name="company_id"/>
+                            <field name="create_date"/>
                         </group>
                         <notebook>
                             <page string="Credit">

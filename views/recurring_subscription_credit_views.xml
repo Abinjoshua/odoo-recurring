@@ -17,6 +17,7 @@
                             <field name="recurring_amount"/>
                             <field name="currency_id"/>
                             <field name="company_id"/>
+                            <field name="create_date"/>
                         </group>
                         <group>
                             <field name="establishment"/>
@@ -40,8 +41,9 @@
                 <field name="recurring_subscription_id"/>
                 <field name="partner_id"/>
                 <field name="recurring_amount"/>
+                <field name="credit_amount"/>
                 <field name="due_date"/>
-                <field name="period_date"/>
+                <field name="create_date"/>
                 <field name="currency_id"/>
             </list>
         </field>

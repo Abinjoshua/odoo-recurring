@@ -52,7 +52,6 @@ class RecurringBillingSchedule(models.Model):
         for record in self:
             record.invoice_count = self.env['account.move'].search_count(
                 [('billing_schedule', 'in', self.name)])
-            print(record.invoice_count)
 
     def action_get_invoices(self):
         self.ensure_one()
@@ -105,15 +104,26 @@ class RecurringBillingSchedule(models.Model):
         """ Create a button in Recurring Subscription “Confirm”, when click on that button, change the state into confirmed """
         for record in self:
             for sub in self.recurring_subscription_ids:
-                max_cred_amount = 0
-                cred_amount = sub.mapped('subscription_credit_ids.credit_amount')
-                for i in cred_amount:
-                    i+max_cred_amount
+                max_cred_amount = []
+                credit_record = self.env['recurring.subscription.credit'].search([('id','in',record.filtered_credit_ids)])
+
+                for j in credit_record:
+                    max_cred_amount.append(j.credit_amount)
+                    # print(max_cred_amount)
+                filtered_max_cred_amount = credit_record.filtered(
+                    lambda x: x.credit_amount == max(max_cred_amount)
+                )
+                # all_cred_amount= filtered_max_cred_amount.mapped('credit_amount')
+                filtered_cred_amount = filtered_max_cred_amount.sorted(lambda x:x.create_date)
+                cred_date = filtered_cred_amount[0].create_date
+                cred_amount = filtered_cred_amount[0].credit_amount
+                print(cred_amount)
                 self.env['account.move'].create({
                     'move_type': 'out_invoice',
                     'partner_id': sub.customer_id.id,
                     'billing_schedule': record.name,
                     'invoice_date': fields.Date.today(),
+                    'credit_date':cred_date,
                     'invoice_line_ids': [
                         Command.create({
                             'name': record.name,
@@ -122,7 +132,7 @@ class RecurringBillingSchedule(models.Model):
                         }),
                         Command.create({
                             'name': record.name + ' Credit',
-                            'price_unit': max(cred_amount),
+                            'price_unit': cred_amount,
                             'quantity': 1,
                         })
                     ],
