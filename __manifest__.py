@@ -2,6 +2,7 @@
 {
     'name': "Recurring Subscription",
     'version': "1.0",
+    'licence': "LGPL-3",
     'summary': """"Recurring Subscription designed to automate billing, manage customer lifecycles, and reduce churn""",
     'description': """Recurring Subscription designed to automate billing, manage customer lifecycles, and reduce churn(description)""",
     'author': "Cybrosys",
@@ -9,18 +10,22 @@
     'category': 'Recurring Subscription',
     'sequence': 1,
     'application': True,
-    'depends': ['base','product', 'mail','contacts','crm'],
+    'depends': ['base', 'product', 'mail', 'contacts', 'crm'],
     'auto_install': True,
     'data':
-        ["security/ir.model.access.csv",
+        ["security/security.xml",
+         "security/ir.model.access.csv",
          "views/recurring_subscription_views.xml",
          "views/recurring_subscription_credit_views.xml",
          "data/recurring_subscription_sequence.xml",
+         "data/mail_template_data.xml",
+         "data/ir_cron_create_invoice.xml",
          "views/recurring_billing_schedule_views.xml",
          "views/recurring_partner_account.xml",
          "views/res_partner_views.xml",
          "views/crm_lead_views.xml",
+         "views/account_move_views.xml",
          "views/recurring_subscription_menu_views.xml"
          ],
-    'demo':['demo/subscription_product_demo.xml']
+    'demo': ['demo/subscription_product_demo.xml']
 }

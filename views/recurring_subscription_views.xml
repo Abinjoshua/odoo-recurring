@@ -7,11 +7,15 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_confirm" type="object" string="Confirm" invisible="state=='confirm'"/>
-                    <button name="action_cancel" type="object" string="Cancel" invisible="state=='cancel'"/>
-                    <field name="state" widget="statusbar" options="{'clickable':1}"/>
+                    <button name="action_confirm" type="object" string="Confirm" invisible="state=='done'"
+                            class="btn-primary"/>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state=='done'"/>
+                    <button name="action_done" type="object" string="Done" invisible="state=='done'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
                 </header>
                 <sheet>
+                    <widget name="web_ribbon" title="Done" bg_color="text-bg-success"
+                            invisible="state != 'done'"/>
                     <div class="oe_title">
                         <h1>
                             <field name="order" readonly="1"/>
@@ -20,7 +24,7 @@
                     <group>
                         <group>
                             <field name="name"/>
-                            <field name="customer_id"/>
+                            <field name="customer_id" readonly="0" force_save="1"/>
                             <field name="establishment"/>
                             <field name="next_billing"/>
                             <field name="currency_id"/>
@@ -33,15 +37,18 @@
                             <field name="product_id"/>
                             <field name="recurring_amount"/>
                             <field name="company_id"/>
+                            <field name="create_date"/>
                         </group>
                         <notebook>
                             <page string="Subscription Credit">
-                                <field name="filtered_credit_ids">
-                                    <list>
+                                <field name="subscription_credit_ids">
+                                    <list editable="bottom">
                                         <field name="recurring_subscription_id"/>
                                         <field name="due_date"/>
                                         <field name="period_date"/>
                                         <field name="state"/>
+                                        <field name="credit_amount"/>
+                                        <field name="recurring_amount"/>
                                     </list>
                                 </field>
                             </page>
