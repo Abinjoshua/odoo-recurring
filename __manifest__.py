@@ -10,10 +10,11 @@
     'category': 'Recurring Subscription',
     'sequence': 1,
     'application': True,
-    'depends': ['base','product', 'mail','contacts','crm'],
+    'depends': ['base', 'product', 'mail', 'contacts', 'crm'],
     'auto_install': True,
     'data':
-        ["security/ir.model.access.csv",
+        ["security/security.xml",
+         "security/ir.model.access.csv",
          "views/recurring_subscription_views.xml",
          "views/recurring_subscription_credit_views.xml",
          "data/recurring_subscription_sequence.xml",
@@ -26,5 +27,5 @@
          "views/account_move_views.xml",
          "views/recurring_subscription_menu_views.xml"
          ],
-    'demo':['demo/subscription_product_demo.xml']
+    'demo': ['demo/subscription_product_demo.xml']
 }

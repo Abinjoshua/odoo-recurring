@@ -109,20 +109,20 @@ class RecurringSubscription(models.Model):
                 else:
                     raise ValidationError("Partner Not Found")
 
-    @api.onchange('state')
-    def _onchange_send_mail(self):
-        # def action_send_mail(self):
-        print('working')
-        for record in self:
-            if record.state == 'done':
-                email_values = {'email_to': record.customer_id.email}
-                template = self.env.ref(
-                    'recurring_subscription.email_template_recurring_done')
-                template.send_mail(record.id, force_send=True, email_values=email_values)
+    # @api.onchange('state')
+    # def _onchange_send_mail(self):
+    #     # def action_send_mail(self):
+    #     print('working')
+    #     for record in self:
+    #         if record.state == 'done':
+    #             email_values = {'email_to': record.customer_id.email}
+    #             template = self.env.ref(
+    #                 'recurring_subscription.email_template_recurring_done')
+    #             template.send_mail(record.id, force_send=True, email_values=email_values)
 
     def action_create_invoice(self):
         """ Create a button in Recurring Subscription “Confirm”, when click on that button, change the state into confirmed """
-        print('hello')
+        print(self.env.company)
         # if self.state == 'confirmed' and self.due_date < fields.Date.today():
         to_invoice = self.env['recurring.subscription'].search([('state', '=', 'confirm'),('due_date', '<=', fields.Date.today())])
         for record in to_invoice:
@@ -137,6 +137,17 @@ class RecurringSubscription(models.Model):
                         'quantity': 1,
                         'product_id': record.product_id.id,
                     }),
+                    Command.create({
+                        'price_unit': - record.recurring_amount,
+                        'product_id': f"{record.create_date}",
+                    }),
                 ],
 
             })
+    def action_done(self):
+        """ Create a button in Recurring Subscription “Done”, when click on that button, change the state into done """
+        self.write({'state': 'done'})
+        email_values = {'email_to': self.customer_id.email}
+        template = self.env.ref(
+            'recurring_subscription.email_template_recurring_done')
+        template.send_mail(self.id, force_send=True, email_values=email_values)

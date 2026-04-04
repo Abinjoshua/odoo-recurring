@@ -17,6 +17,11 @@
             <field name="name">Amazon</field>
             <field name="type">service</field>
         </record>
+        <!--Discount Product-->
+        <record id="product_product_service" model="product.product">
+            <field name="name">Discount</field>
+            <field name="type">service</field>
+        </record>
     </data>
 </odoo>
 

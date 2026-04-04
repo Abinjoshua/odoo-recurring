@@ -13,18 +13,5 @@
                   eval="(DateTime.now() + timedelta(days=1)).strftime('%Y-%m-%d 12:00:00')"/>
            <field name="priority">1</field>
        </record>
-
-<!--       <record id="sending_mail" model="ir.cron">-->
-<!--           <field name="name">Sending Mail</field>-->
-<!--           <field name="model_id" ref="recurring_subscription.model_recurring_subscription"/>-->
-<!--           <field name="state">code</field>-->
-<!--           <field name="code">model.action_send_mail()</field>-->
-<!--           <field name="user_id" ref="base.user_root"/>-->
-<!--           <field name='interval_number'>1</field>-->
-<!--           <field name='interval_type'>days</field>-->
-<!--           <field name="nextcall"-->
-<!--                  eval="(DateTime.now() + timedelta(days=1)).strftime('%Y-%m-%d 12:00:00')"/>-->
-<!--           <field name="priority">1</field>-->
-<!--       </record>-->
    </data>
 </odoo>
