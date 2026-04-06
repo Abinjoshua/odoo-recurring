@@ -36,17 +36,6 @@ class RecurringSubscription(models.Model):
                                               string='Subscription Credits', readonly=False,
                                               compute='_compute_subscription_credit_ids')
 
-    # filtered_credit_ids = fields.One2many('recurring.subscription.credit', 'recurring_subscription_id',
-    #                                       string='Subscription Credits', compute='_compute_filtered_credit_ids')
-    # filtered_credit_amount = fields.One2many('recurring.subscription.credit', 'recurring_subscription_id',
-    #                                       string='Credits Amount', compute='_compute_filtered_credit_amount')
-
-    # def _compute_due_date(self):
-    #     """ By default, the due date is set 15 days from today """
-    #     for record in self:
-    #         if record in self:
-    #             record.due_date = fields.Date.today() + timedelta(days=15)
-
     @api.model_create_multi
     def create(self, vals_list):
         """ Create a sequence for the recurring subscription model """
@@ -89,15 +78,6 @@ class RecurringSubscription(models.Model):
                  ('recurring_subscription_id.id', '=', record.id),
                  ('period_date', '<=', record.due_date)])
 
-    # @api.depends('filtered_credit_ids.recurring_amount', 'filtered_credit_ids.credit_amount')
-    # def _compute_filtered_credit_amount(self):
-    #     """ Function to filter the subscription_credit_ids field in the recurring subscription model """
-    #     for record in self:
-    #         # if record.filtered_credit_ids.recurring_amount == record.filtered_credit_ids.credit_amount:
-    #         record.filtered_credit_amount = record.filtered_credit_ids.filtered(
-    #             lambda rec: rec.credit_amount == rec.recurring_amount
-    #         )
-
     @api.onchange('establishment')
     def _onchange_customer_ids(self):
         """ Function to filter the customer_ids field in the recurring subscription model """
@@ -109,22 +89,12 @@ class RecurringSubscription(models.Model):
                 else:
                     raise ValidationError("Partner Not Found")
 
-    # @api.onchange('state')
-    # def _onchange_send_mail(self):
-    #     # def action_send_mail(self):
-    #     print('working')
-    #     for record in self:
-    #         if record.state == 'done':
-    #             email_values = {'email_to': record.customer_id.email}
-    #             template = self.env.ref(
-    #                 'recurring_subscription.email_template_recurring_done')
-    #             template.send_mail(record.id, force_send=True, email_values=email_values)
-
     def action_create_invoice(self):
         """ Create a button in Recurring Subscription “Confirm”, when click on that button, change the state into confirmed """
         print(self.env.company)
         # if self.state == 'confirmed' and self.due_date < fields.Date.today():
-        to_invoice = self.env['recurring.subscription'].search([('state', '=', 'confirm'),('due_date', '<=', fields.Date.today())])
+        to_invoice = self.env['recurring.subscription'].search(
+            [('state', '=', 'confirm'), ('due_date', '<=', fields.Date.today())])
         for record in to_invoice:
             self.env['account.move'].create({
                 'move_type': 'out_invoice',
@@ -144,6 +114,7 @@ class RecurringSubscription(models.Model):
                 ],
 
             })
+
     def action_done(self):
         """ Create a button in Recurring Subscription “Done”, when click on that button, change the state into done """
         self.write({'state': 'done'})

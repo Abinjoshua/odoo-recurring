@@ -2,6 +2,7 @@
 from odoo import models, fields, Command
 from odoo import api
 
+
 class RecurringBillingSchedule(models.Model):
     _name = "recurring.billing.schedule"
     _description = "Recurring Subscription Billing Schedule"
@@ -27,7 +28,7 @@ class RecurringBillingSchedule(models.Model):
     credit_amount = fields.Monetary(string="Credit Amount", currency_field="currency_id", default=0,
                                     compute="_compute_credit_amount")
     company_id = fields.Many2one('res.company', string="Company", default=lambda self: self.env.company)
-    invoice_count = fields.Integer(string="Invoice Count",default=0, compute="_compute_total_invoice_count")
+    invoice_count = fields.Integer(string="Invoice Count", default=0, compute="_compute_total_invoice_count")
     active = fields.Boolean(default=True)
 
     def compute_recurring_subscription_count(self):
@@ -37,6 +38,7 @@ class RecurringBillingSchedule(models.Model):
                 [('id', '=', record.mapped('recurring_subscription_ids.id'))])
 
     def action_get_recurring_subscription(self):
+        """ Function to create the smart button for the recurring subscription"""
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
@@ -46,6 +48,7 @@ class RecurringBillingSchedule(models.Model):
             'domain': [('id', 'in', self.mapped('recurring_subscription_ids.id'))],
             'context': "{'create': False}"
         }
+
     def _compute_total_invoice_count(self):
         """ Function to get the number of recurring subscriptions """
         for record in self:
@@ -53,6 +56,7 @@ class RecurringBillingSchedule(models.Model):
                 [('billing_schedule', 'in', self.name)])
 
     def action_get_invoices(self):
+        """ Function to create the smart button for the invoices"""
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
@@ -87,12 +91,14 @@ class RecurringBillingSchedule(models.Model):
 
     @api.depends('filtered_credit_ids.credit_amount')
     def _compute_credit_amount(self):
+        """ Function to find the sum of all the credit amount in the One2many"""
         for record in self:
             all_credit_amount = record.mapped('filtered_credit_ids.credit_amount')
             record.update({'credit_amount': sum(all_credit_amount)})
 
     @api.depends('recurring_subscription_ids')
     def _compute_credit_ids(self):
+        """ Function to find the credits related to the recurring subscription ids """
         for record in self:
             all_cred_ids = self.env['recurring.subscription.credit'].search(
                 [('recurring_subscription_id.name', 'in', record.mapped('recurring_subscription_ids.name'))])
@@ -104,13 +110,14 @@ class RecurringBillingSchedule(models.Model):
             for sub in self.recurring_subscription_ids:
                 service_product = self.env['product.product'].browse(83)
                 max_cred_amount = []
-                credit_record = self.env['recurring.subscription.credit'].search([('id','in',record.filtered_credit_ids)])
+                credit_record = self.env['recurring.subscription.credit'].search(
+                    [('id', 'in', record.filtered_credit_ids)])
                 for j in credit_record:
                     max_cred_amount.append(j.credit_amount)
                 filtered_max_cred_amount = credit_record.filtered(
                     lambda x: x.credit_amount == max(max_cred_amount)
                 )
-                filtered_cred_amount = filtered_max_cred_amount.sorted(lambda x:x.create_date)
+                filtered_cred_amount = filtered_max_cred_amount.sorted(lambda x: x.create_date)
                 cred_date = filtered_cred_amount[0].create_date
                 cred_amount = filtered_cred_amount[0].credit_amount
                 self.env['account.move'].create({
@@ -118,7 +125,7 @@ class RecurringBillingSchedule(models.Model):
                     'partner_id': sub.customer_id.id,
                     'billing_schedule': record.name,
                     'invoice_date': fields.Date.today(),
-                    'credit_date':cred_date,
+                    'credit_date': cred_date,
                     'invoice_line_ids': [
                         Command.create({
                             'name': record.name,

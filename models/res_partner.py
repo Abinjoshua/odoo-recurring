@@ -18,6 +18,7 @@ class ResPartner(models.Model):
     establishment = fields.Char(string="Establishment",required=True)
 
     def generate_account_id(self):
+        """ Function to generate the account id """
         special_characters = '!', '@', '#', '$', '%', '^', '&', '*'
         r_special_characters = random.choices(special_characters, k=2)
         r_characters = random.choices(string.ascii_letters, k=3)
@@ -53,4 +54,3 @@ class ResPartner(models.Model):
                     raise ValidationError("The establishment must contain at least 3 characters")
                 if len(y) < 3:
                     raise ValidationError("The establishment must contain at least 3 digits")
-
