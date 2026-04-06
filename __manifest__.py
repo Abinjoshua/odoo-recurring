@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 {
     'name': "Recurring Subscription",
-    'version': "1.0",
+    'version': "19.0.1.0",
     'licence': "LGPL-3",
-    'summary': """"Recurring Subscription designed to automate billing, manage customer lifecycles, and reduce churn""",
+    'summary': """"Recurring Subscription designed to automate billing""",
     'description': """Recurring Subscription designed to automate billing, manage customer lifecycles, and reduce churn(description)""",
     'author': "Cybrosys",
     'website': "http://www.cybrosys.com",

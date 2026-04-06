@@ -4,6 +4,7 @@ import re
 from odoo.exceptions import ValidationError
 from datetime import timedelta
 
+
 class RecurringSubscriptionCredit(models.Model):
     _name = "recurring.subscription.credit"
     _description = "Recurring Subscription Credit"
@@ -14,9 +15,11 @@ class RecurringSubscriptionCredit(models.Model):
                                                 required=True)
     partner_id = fields.Many2one(related='recurring_subscription_id.customer_id', string="Partner")
     state = fields.Selection(
-        [('pending', 'Pending'), ('confirmed', 'Confirmed'), ('first_approved', 'First approved'),
+        [('pending', 'Pending'),
+         ('confirmed', 'Confirmed'),
+         ('first_approved', 'First approved'),
          ('fully_approved', 'Fully approved'),
-         ('rejected', 'Rejected'), ],default='pending')
+         ('rejected', 'Rejected')], default='pending')
     currency_id = fields.Many2one(related='recurring_subscription_id.currency_id', string="Currency")
     recurring_amount = fields.Monetary(related='recurring_subscription_id.recurring_amount', string="Recurring Amount",
                                        currency_field='currency_id', default=1, required=True)
@@ -44,10 +47,9 @@ class RecurringSubscriptionCredit(models.Model):
                 record.due_date = fields.Date.today() + timedelta(days=15)
 
     @api.onchange('credit_amount')
-    def _compute_credit_amount(self):
+    def _onchange_credit_amount(self):
+        """ The credit amount should always be lesser than the recurring amount """
         for record in self:
             if record in self:
                 if record.credit_amount == 0 or record.credit_amount > record.recurring_amount:
                     record.recurring_subscription_id = None
-
-
