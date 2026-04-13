@@ -11,6 +11,8 @@
               parent="menu_recurring_subscription_root"/>
     <menuitem id="menu_recurring_partner_account" name="Partner"
               parent="menu_recurring_subscription_root"/>
+    <menuitem id="menu_recurring_report" name="Report"
+              parent="menu_recurring_subscription_root"/>
 
     <!--    Sub Menu with action    -->
     <menuitem id="menu_recurring_subscription_subscriptions_order" name="Order"
@@ -25,4 +27,7 @@
     <menuitem id="menu_recurring_partner_account_partner" name="Partner"
               parent="menu_recurring_partner_account"
               action="action_recurring_partner_account"/>
+    <menuitem id="menu_recurring_report_report" name="Report"
+              parent="menu_recurring_report"
+              action="action_recurring_report"/>
 </odoo>
