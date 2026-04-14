@@ -25,7 +25,6 @@
                             <field name="period_date"/>
                             <field name="credit_amount"/>
                             <field name="billing_schedule_id"/>
-                            <field name="recurring_intervals"/>
                         </group>
                     </group>
                 </sheet>

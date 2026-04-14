@@ -11,10 +11,30 @@
                         <br></br>
                         <p>
                             Name :
-                            <span t-field="o.subscription_id.name"/>
+                            <span t-field="o.name"/>
 
                         </p>
                     </div>
+                    <div class="oe_structure"></div>
+                    <table class="o_has_total_table table o_main_table table-borderless">
+                        <!-- In case we want to repeat the header, remove "display: table-row-group" -->
+                        <thead style="display: table-row-group">
+                            <tr>
+                                <th name="th_slno" class="text-start">SL.No</th>
+                                <th name="th_quantity" class="text-end text-nowrap">Quantity</th>
+                                <th name="th_priceunit" class="text-end text-nowrap">Unit Price</th>
+                                <th name="th_discount" t-if="display_discount" class="text-end">
+                                    <span>Disc.%</span>
+                                </th>
+                                <th name="th_taxes" t-if="display_taxes" class="text-end">
+                                    <span>Taxes</span>
+                                </th>
+                                <th name="th_subtotal" class="text-end">
+                                    <span>Amount</span>
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
                 </t>
             </t>
         </t>

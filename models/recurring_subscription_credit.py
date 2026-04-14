@@ -20,11 +20,7 @@ class RecurringSubscriptionCredit(models.Model):
          ('first_approved', 'First approved'),
          ('fully_approved', 'Fully approved'),
          ('rejected', 'Rejected')], default='pending')
-    recurring_intervals = fields.Selection(
-        [('daily', 'Daily'),
-         ('weekly', 'Weekly'),
-         ('monthly', 'Monthly'),
-         ('yearly', 'Yearly'), ])
+
     currency_id = fields.Many2one(related='recurring_subscription_id.currency_id', string="Currency")
     recurring_amount = fields.Monetary(related='recurring_subscription_id.recurring_amount', string="Recurring Amount",
                                        currency_field='currency_id', default=1, required=True)

@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
                 <form string="Print subscriptions">
                     <group>
-                        <field name="subscription_id"/>
+                        <field name="subscription_ids" widget="many2many_tags"/>
                         <field name="recurring_intervals"/>
                     </group>
                     <footer>

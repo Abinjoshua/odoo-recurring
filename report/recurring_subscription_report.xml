@@ -3,11 +3,11 @@
     <data>
         <record id="action_recurring_report_subscription" model="ir.actions.report">
             <field name="name">Subscription Report</field>
-            <field name="model">recurring.subscription.credit</field>
+            <field name="model">recurring.subscription</field>
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">recurring_subscription.report_recurring_subscription</field>
             <field name="report_file">recurring_subscription.report_recurring_subscription</field>
-            <field name="binding_model_id" ref="recurring_subscription.model_recurring_subscription_credit"/>
+            <field name="binding_model_id" ref="model_recurring_subscription"/>
             <field name="binding_type">report</field>
         </record>
     </data>
