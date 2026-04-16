@@ -29,6 +29,7 @@
                             <field name="next_billing"/>
                             <field name="currency_id"/>
                             <field name="billing_schedule_id"/>
+                            <field name="total_credit_applied"/>
                         </group>
                         <group>
                             <field name="date"/>
@@ -38,6 +39,7 @@
                             <field name="recurring_amount"/>
                             <field name="company_id"/>
                             <field name="create_date"/>
+                            <field name="amount_pending"/>
                         </group>
                         <notebook>
                             <page string="Subscription Credit">

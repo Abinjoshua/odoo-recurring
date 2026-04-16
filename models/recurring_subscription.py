@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 from dateutil.relativedelta import relativedelta
+from openpyxl.styles.builtins import total
+
 from odoo import api
 from odoo.exceptions import ValidationError
 from odoo import models, fields, _, Command
 import re
+
+from odoo.orm.decorators import readonly
 
 
 class RecurringSubscription(models.Model):
@@ -35,6 +39,22 @@ class RecurringSubscription(models.Model):
     subscription_credit_ids = fields.One2many('recurring.subscription.credit', 'recurring_subscription_id',
                                               string='Subscription Credits', readonly=False,
                                               compute='_compute_subscription_credit_ids')
+    total_credit_applied = fields.Float(string="Total Credit Applied",compute='_compute_total_credit_applied',store=True)
+    amount_pending = fields.Float(string="Amount Pending",compute='_compute_amount_pending',store=True)
+
+    @api.depends('recurring_amount','total_credit_applied')
+    def _compute_amount_pending(self):
+        for record in self:
+            record.amount_pending = record.recurring_amount - record.total_credit_applied
+
+    @api.depends('subscription_credit_ids.credit_amount')
+    def _compute_total_credit_applied(self):
+        self.total_credit_applied = 0
+        total = []
+        for record in self.subscription_credit_ids:
+            if record.credit_amount:
+                total += record.mapped('credit_amount')
+                self.total_credit_applied = sum(total)
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -91,7 +111,6 @@ class RecurringSubscription(models.Model):
 
     def action_create_invoice(self):
         """ Create a button in Recurring Subscription “Confirm”, when click on that button, change the state into confirmed """
-        print(self.env.company)
         # if self.state == 'confirmed' and self.due_date < fields.Date.today():
         to_invoice = self.env['recurring.subscription'].search(
             [('state', '=', 'confirm'), ('due_date', '<=', fields.Date.today())])

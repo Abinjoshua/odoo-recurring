@@ -27,7 +27,10 @@
     <menuitem id="menu_recurring_partner_account_partner" name="Partner"
               parent="menu_recurring_partner_account"
               action="action_recurring_partner_account"/>
-    <menuitem id="menu_recurring_report_report" name="Report"
+    <menuitem id="menu_recurring_report_report" name="Subscription Report"
               parent="menu_recurring_report"
               action="action_recurring_report"/>
+    <menuitem id="menu_recurring_report_credit_report" name="Subscription Credit Report"
+              parent="menu_recurring_report"
+              action="action_recurring_credit_report"/>
 </odoo>

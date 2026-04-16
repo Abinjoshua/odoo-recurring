@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!--    Report Template-->
-    <template id="report_recurring_subscription">
+    <template id="report_sub_credit">
         <t t-call="web.html_container">
             <t t-call="web.external_layout">
                 <div class="page">
-                    <h2>Subscription Report</h2>
+                    <h2>Subscription Credit Report</h2>
                     <br/>
-
                     <table class="table table">
                         <thead>
                             <tr>
                                 <th>SL.No</th>
-                                <th>Name</th>
+                                <th>Subscription</th>
                                 <th>Customer</th>
-                                <th>Product</th>
-                                <th>Amount</th>
-                                <th>Total Credit Applied</th>
+                                <th>Amount Applied</th>
+                                <th>Amount Pending</th>
                                 <th>State</th>
                             </tr>
                         </thead>
@@ -25,11 +23,10 @@
                             <t t-foreach="docs" t-as="o">
                                 <tr>
                                     <td><span t-field="o.id"/></td>
-                                    <td><span t-field="o.name"/></td>
-                                    <td><span t-field="o.customer_id"/></td>
-                                    <td><span t-field="o.product_id"/></td>
-                                    <td><span t-field="o.recurring_amount"/></td>
-                                    <td><span t-field="o.total_credit_applied"/></td>
+                                    <td><span t-field="o.recurring_subscription_id"/></td>
+                                    <td><span t-field="o.partner_id"/></td>
+                                    <td><span t-field="o.credit_amount"/></td>
+                                    <td><span t-field="o.amount_pending"/></td>
                                     <td><span t-field="o.state"/></td>
                                 </tr>
                             </t>

@@ -4,6 +4,8 @@ import re
 from odoo.exceptions import ValidationError
 from datetime import timedelta
 
+from odoo.orm.decorators import readonly
+
 
 class RecurringSubscriptionCredit(models.Model):
     _name = "recurring.subscription.credit"
@@ -30,6 +32,7 @@ class RecurringSubscriptionCredit(models.Model):
     credit_amount = fields.Float(string="Credit Amount", default=1)
     period_date = fields.Date(string="Period Date")
     billing_schedule_id = fields.Many2one('recurring.billing.schedule', string="Billing Schedule")
+    amount_pending = fields.Float(string="Amount Pending",related='recurring_subscription_id.amount_pending',store=True)
 
     @api.constrains('establishment')
     def _check_establishment(self):

@@ -21,14 +21,17 @@
          "data/mail_template_data.xml",
          "data/ir_cron_create_invoice.xml",
          "report/recurring_subscription_template.xml",
+         "report/recurring_subscription_credit_template.xml",
          "report/recurring_subscription_report.xml",
+         "report/recurring_subscription_credit_report.xml",
          "wizard/subscription_report_views.xml",
+         "wizard/subscription_credit_report_views.xml",
          "views/recurring_billing_schedule_views.xml",
          "views/recurring_partner_account.xml",
          "views/res_partner_views.xml",
          "views/crm_lead_views.xml",
          "views/account_move_views.xml",
-         "views/recurring_subscription_menu_views.xml"
+         "views/recurring_subscription_menu_views.xml",
          ],
     'demo': ['demo/subscription_product_demo.xml']
 }
