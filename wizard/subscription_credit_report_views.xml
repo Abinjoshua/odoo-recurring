@@ -2,13 +2,13 @@
 <odoo>
     <data>
         <!--    create form view    -->
-        <record id="subscription_credit_report_views_form" model="ir.ui.view">
-            <field name="name">subscription.credit.report.wizard.form</field>
-            <field name="model">subscription.credit.report.wizard</field>
+        <record id="credit_report_views_form" model="ir.ui.view">
+            <field name="name">credit.report.wizard.form</field>
+            <field name="model">credit.report.wizard</field>
             <field name="arch" type="xml">
                 <form string="Subscription Credit Report">
                     <group>
-<!--                        <field name="subscription_credit_ids" widget="many2many_tags"/>-->
+                        <field name="credit_ids" widget="many2many_tags"/>
                         <field name="state"/>
                     </group>
                     <footer>
@@ -21,9 +21,9 @@
         <!--    Wizard action sub-->
         <record id="action_recurring_credit_report" model="ir.actions.act_window">
             <field name="name">Subscription Credit Report</field>
-            <field name="res_model">subscription.credit.report.wizard</field>
+            <field name="res_model">credit.report.wizard</field>
             <field name="view_mode">form</field>
-            <field name="view_id" ref="subscription_credit_report_views_form"/>
+            <field name="view_id" ref="credit_report_views_form"/>
             <field name="target">new</field>
         </record>
     </data>
