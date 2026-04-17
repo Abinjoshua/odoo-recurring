@@ -25,6 +25,7 @@
                             <field name="period_date"/>
                             <field name="credit_amount"/>
                             <field name="billing_schedule_id"/>
+                            <field name="amount_pending"/>
                         </group>
                     </group>
                 </sheet>
@@ -45,6 +46,7 @@
                 <field name="due_date"/>
                 <field name="create_date"/>
                 <field name="currency_id"/>
+                <field name="state"/>
             </list>
         </field>
     </record>

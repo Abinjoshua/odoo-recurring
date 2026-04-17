@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--    create form view    -->
+        <record id="credit_report_views_form" model="ir.ui.view">
+            <field name="name">credit.report.wizard.form</field>
+            <field name="model">credit.report.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Subscription Credit Report">
+                    <group>
+                        <field name="credit_ids" widget="many2many_tags"/>
+                        <field name="state"/>
+                    </group>
+                    <footer>
+                        <button name="action_print_credit_report" type="object" string="Print" class="btn-primary"/>
+                        <button string="Cancel" class="btn-primary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <!--    Wizard action sub-->
+        <record id="action_recurring_credit_report" model="ir.actions.act_window">
+            <field name="name">Subscription Credit Report</field>
+            <field name="res_model">credit.report.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="credit_report_views_form"/>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

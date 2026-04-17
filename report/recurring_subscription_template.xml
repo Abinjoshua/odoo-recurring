@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--    Report Template-->
+    <template id="report_recurring_subscription">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Subscription Report</h2>
+                    <br/>
+                    <div class="col" t-if="docid">
+                        <strong>Name</strong>
+                        <div t-field="docid.name"/>
+                    </div>
+                    <div class="col" t-if="wizard.recurring_intervals">
+                        <strong>Recurring Intervals</strong>
+                        <div t-field="wizard.recurring_intervals"/>
+                    </div>
+                    <table class="table table">
+                        <thead>
+                            <tr>
+                                <th>SL.No</th>
+                                <th t-if="docid==None">Name</th>
+                                <th>Customer</th>
+                                <th>Product</th>
+                                <th>Amount</th>
+                                <th>Total Credit Applied</th>
+                                <th>State</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <t t-foreach="docs" t-as="o">
+                                <tr>
+                                    <td>
+                                        <span t-field="o.id"/>
+                                    </td>
+                                    <td t-if="docid==None">
+                                        <span t-field="o.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="o.customer_id"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="o.product_id"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="o.recurring_amount"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="o.total_credit_applied"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="o.state"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>
