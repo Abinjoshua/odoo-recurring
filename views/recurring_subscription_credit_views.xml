@@ -46,6 +46,7 @@
                 <field name="due_date"/>
                 <field name="create_date"/>
                 <field name="currency_id"/>
+                <field name="state"/>
             </list>
         </field>
     </record>

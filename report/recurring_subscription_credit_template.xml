@@ -7,11 +7,19 @@
                 <div class="page">
                     <h2>Subscription Credit Report</h2>
                     <br/>
+                    <div class="col" t-if="docid">
+                        <strong>Name</strong>
+                        <div t-field="docid.recurring_subscription_id"/>
+                    </div>
+                    <div class="col" t-if="wizard.state">
+                        <strong>Credit Status</strong>
+                        <div t-field="wizard.state"/>
+                    </div>
                     <table class="table table">
                         <thead>
                             <tr>
                                 <th>SL.No</th>
-                                <th>Subscription</th>
+                                <th t-if="docid==None">Subscription</th>
                                 <th>Customer</th>
                                 <th>Amount Applied</th>
                                 <th>Amount Pending</th>
@@ -23,7 +31,7 @@
                             <t t-foreach="docs" t-as="o">
                                 <tr>
                                     <td><span t-field="o.id"/></td>
-                                    <td><span t-field="o.recurring_subscription_id"/></td>
+                                    <td t-if="docid==None"><span t-field="o.recurring_subscription_id"/></td>
                                     <td><span t-field="o.partner_id"/></td>
                                     <td><span t-field="o.credit_amount"/></td>
                                     <td><span t-field="o.amount_pending"/></td>
