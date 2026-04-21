@@ -17,7 +17,7 @@ class SubscriptionWizardReport(models.AbstractModel):
                 end_date = start_date + timedelta(days=1)
 
             elif wizard.recurring_intervals == 'week':
-                start_date = datetime(now.year, now.month,now.day-7)
+                start_date = datetime(now.year, now.month, now.day - 7)
                 end_date = start_date + timedelta(now.day)
                 print(start_date)
 
@@ -32,15 +32,32 @@ class SubscriptionWizardReport(models.AbstractModel):
                 start_date = datetime(now.year, 1, 1)
                 end_date = datetime(now.year + 1, 1, 1)
 
-            domain = [
-                ('create_date', '>=', start_date),
-                ('create_date', '<', end_date),
-                ('id', 'in', wizard.subscription_ids),
-            ]
-            docs = self.env['recurring.subscription'].search(domain)
+            # domain = [
+            #     ('create_date', '>=', start_date),
+            #     ('create_date', '<', end_date),
+            #     ('id', 'in', wizard.subscription_ids),
+            # ]
+
+            query = """
+                         SELECT id
+                           FROM recurring_subscription
+                           WHERE create_date >= %s
+                           AND create_date < %s
+                           AND id = ANY(%s)
+                    """
+            print(query)
+            params = (start_date, end_date, wizard.subscription_ids.ids)
+            self.env.cr.execute(query, params)
+            row = self.env.cr.fetchall()
+            ids = []
+            for row in row:
+                ids.append(row[0])
+            print(ids)
+
+            docs = self.env['recurring.subscription'].browse(ids)
+            print(docs)
             if len(docs) == 1:
                 docid = docs
-                print(docid)
             else:
                 docid = None
 
@@ -64,11 +81,21 @@ class SubscriptionWizardReport(models.AbstractModel):
                 start_date = datetime(now.year, 1, 1)
                 end_date = datetime(now.year + 1, 1, 1)
 
-            domain = [
-                ('create_date', '>=', start_date),
-                ('create_date', '<', end_date),
-            ]
-            docs = self.env['recurring.subscription'].search(domain)
+            query = """
+                        SELECT id
+                        FROM recurring_subscription
+                        WHERE create_date >= %s
+                        AND create_date < %s
+                    """
+            params = (start_date, end_date)
+            self.env.cr.execute(query, params)
+            row = self.env.cr.fetchall()
+
+            ids = []
+            for row in row:
+                ids.append(row[0])
+
+            docs = self.env['recurring.subscription'].browse(ids)
             if len(docs) == 1:
                 docid = docs
                 print(docid)
@@ -77,6 +104,7 @@ class SubscriptionWizardReport(models.AbstractModel):
 
         elif wizard.subscription_ids:
             domain = [('id', 'in', wizard.subscription_ids)]
+
             docs = self.env['recurring.subscription'].search(domain)
             if len(docs) == 1:
                 docid = docs
@@ -84,7 +112,17 @@ class SubscriptionWizardReport(models.AbstractModel):
             else:
                 docid = None
         else:
-            docs = self.env['recurring.subscription'].search([])
+            query = """
+                        SELECT id
+                        FROM recurring_subscription
+                    """
+            self.env.cr.execute(query)
+            row = self.env.cr.fetchall()
+            ids = []
+            for row in row:
+                ids.append(row[0])
+
+            docs = self.env['recurring.subscription'].browse(ids)
             if len(docs) == 1:
                 docid = docs
                 print(docid)

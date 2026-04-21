@@ -13,6 +13,7 @@
                     </group>
                     <footer>
                         <button name="action_print_credit_report" type="object" string="Print" class="btn-primary"/>
+                        <button name="action_print_xlsx_report" type="object" string="Print xlsx" class="btn-primary"/>
                         <button string="Cancel" class="btn-primary" special="cancel"/>
                     </footer>
                 </form>

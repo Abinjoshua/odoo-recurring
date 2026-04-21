@@ -10,7 +10,7 @@ class SubscriptionReportWizard(models.TransientModel):
     _name = 'subscription.report.wizard'
     _description = 'Print Subscription Report'
 
-    subscription_ids = fields.Many2many('recurring.subscription', 'Subscription')
+    subscription_ids = fields.Many2many('recurring.subscription', 'Subscription',store=True)
     recurring_intervals = fields.Selection(
         [('day', 'Day'),
          ('week', 'Week'),
@@ -31,10 +31,6 @@ class SubscriptionReportWizard(models.TransientModel):
         total_credit_applied = self.mapped('subscription_ids.total_credit_applied')
         state = self.mapped('subscription_ids.state')
         recurring_intervals = self.recurring_intervals
-        query = (""" SELECT * FROM recurring_subscription """)
-        self.env.cr.execute(query)
-        demo = self.env.cr.fetchall()
-        print(demo)
 
         data = {
             'model_id': self.id,
@@ -52,7 +48,7 @@ class SubscriptionReportWizard(models.TransientModel):
                      'options': json.dumps(data,
                                            default=json_default),
                      'output_format': 'xlsx',
-                     'report_name': 'Sales Excel Report',
+                     'report_name': 'Subscription Report',
                      },
             'report_type': 'xlsx',
         }
@@ -67,8 +63,9 @@ class SubscriptionReportWizard(models.TransientModel):
             {'align': 'center', 'bold': True, 'font_size': '20px'})
         txt = workbook.add_format({'font_size': '10px', 'align': 'center'})
         sheet.merge_range('B2:I3', 'SUBSCRIPTION REPORT', head)
-        sheet.merge_range('A5:B5', 'Recurring Interval', cell_format)
-        sheet.merge_range(f'C5:D5', data['recurring_intervals'], txt)
+        if data['recurring_intervals']:
+            sheet.merge_range('A5:B5', 'Recurring Interval', cell_format)
+            sheet.merge_range(f'C5:D5', data['recurring_intervals'], txt)
         sheet.merge_range('A7:B7', 'Name', cell_format)
         for i, name in enumerate(data['names'],
                                  start=8):
