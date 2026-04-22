@@ -15,7 +15,7 @@ class RecurringSubscriptionCredit(models.Model):
 
     recurring_subscription_id = fields.Many2one('recurring.subscription', string="Recurring Subscription",
                                                 required=True)
-    partner_id = fields.Many2one(related='recurring_subscription_id.customer_id', string="Partner")
+    partner_id = fields.Many2one(related='recurring_subscription_id.customer_id', string="Partner",store=True)
     state = fields.Selection(
         [('pending', 'Pending'),
          ('confirmed', 'Confirmed'),
