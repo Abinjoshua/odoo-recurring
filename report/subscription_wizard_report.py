@@ -40,12 +40,11 @@ class SubscriptionWizardReport(models.AbstractModel):
 
             query = """
                          SELECT id
-                           FROM recurring_subscription
-                           WHERE create_date >= %s
-                           AND create_date < %s
-                           AND id = ANY(%s)
+                         FROM recurring_subscription
+                         WHERE create_date >= %s
+                         AND create_date < %s
+                         AND id = ANY(%s)
                     """
-            print(query)
             params = (start_date, end_date, wizard.subscription_ids.ids)
             self.env.cr.execute(query, params)
             row = self.env.cr.fetchall()
@@ -102,10 +101,25 @@ class SubscriptionWizardReport(models.AbstractModel):
             else:
                 docid = None
 
-        elif wizard.subscription_ids:
-            domain = [('id', 'in', wizard.subscription_ids)]
 
-            docs = self.env['recurring.subscription'].search(domain)
+        elif wizard.subscription_ids:
+
+            query = """
+                        SELECT id
+                        FROM recurring_subscription
+                        WHERE id = ANY(%s)
+                    """
+
+            params = (wizard.subscription_ids.ids,)
+            self.env.cr.execute(query, params)
+            row = self.env.cr.fetchall()
+
+            ids = []
+            for row in row:
+                ids.append(row[0])
+
+            docs = self.env['recurring.subscription'].browse(ids)
+
             if len(docs) == 1:
                 docid = docs
                 print(docid)

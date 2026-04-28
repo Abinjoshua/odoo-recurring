@@ -27,6 +27,7 @@
          "wizard/subscription_report_views.xml",
          "wizard/subscription_credit_report_views.xml",
          "views/recurring_billing_schedule_views.xml",
+         "views/website_form.xml",
          "views/recurring_partner_account.xml",
          "views/res_partner_views.xml",
          "views/crm_lead_views.xml",

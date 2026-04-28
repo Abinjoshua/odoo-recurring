@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from odoo import models
-from odoo.tools import query
 
 
 class SubscriptionCreditWizardReport(models.AbstractModel):
@@ -32,45 +31,43 @@ class SubscriptionCreditWizardReport(models.AbstractModel):
                 docid = None
 
         elif wizard.credit_ids:
-            # query = """
-            #             SELECT id
-            #             FROM recurring_subscription_credit
-            #             WHERE id = ANY(%s)
-            #         """
-            domain = [
-                ('id', 'in', wizard.credit_ids),
-            ]
-            # params = (wizard.credit_ids.ids)
-            # self.env.cr.execute(query, params)
-            # row = self.env.cr.fetchall()
+            query = """
+                        SELECT id
+                        FROM recurring_subscription_credit
+                        WHERE id = ANY(%s)
+                    """
 
-            # ids = []
-            # for row in row:
-            #     ids.append(row[0])
+            params = (wizard.credit_ids.ids,)
+            self.env.cr.execute(query, params)
+            row = self.env.cr.fetchall()
 
-            docs = self.env['recurring.subscription.credit'].search(domain)
+            ids = []
+            for row in row:
+                ids.append(row[0])
+
+            docs = self.env['recurring.subscription.credit'].browse(ids)
             if len(docs) == 1:
                 docid = docs
             else:
                 docid = None
 
         elif wizard.state:
-            domain = [
-                ('state', 'in', wizard.state),
-            ]
-            # query = """
-            #             SELECT id
-            #             FROM recurring_subscription_credit
-            #             WHERE state = '%s'
-            #         """
-            # params = (wizard.state)
-            # self.env.cr.execute(query, params)
-            # row = self.env.cr.fetchall()
-            # ids = []
-            # for row in row:
-            #     ids.append(row[0])
+            # domain = [
+            #     ('state', 'in', wizard.state),
+            # ]
+            query = """
+                        SELECT id
+                        FROM recurring_subscription_credit
+                        WHERE state = %s
+                    """
+            params = (wizard.state,)
+            self.env.cr.execute(query, params)
+            row = self.env.cr.fetchall()
+            ids = []
+            for row in row:
+                ids.append(row[0])
 
-            docs = self.env['recurring.subscription.credit'].search(domain)
+            docs = self.env['recurring.subscription.credit'].browse(ids)
             if len(docs) == 1:
                 docid = docs
             else:

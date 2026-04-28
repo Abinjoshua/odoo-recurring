@@ -4,6 +4,7 @@ import io
 import json
 import xlsxwriter
 from odoo.tools import json_default
+from datetime import datetime, timedelta
 
 
 class SubscriptionReportWizard(models.TransientModel):
@@ -18,22 +19,127 @@ class SubscriptionReportWizard(models.TransientModel):
          ('year', 'Year'), ],store=True)
 
     def action_print_report(self):
-        print(self)
         return self.env.ref(
             'recurring_subscription.action_recurring_report_subscription'
         ).report_action(self)
 
     def action_print_xlsx_report(self):
-        customers = self.mapped('subscription_ids.customer_id.name')
-        names = self.mapped('subscription_ids.name')
-        products = self.mapped('subscription_ids.product_id.name')
-        amount = self.mapped('subscription_ids.recurring_amount')
-        total_credit_applied = self.mapped('subscription_ids.total_credit_applied')
-        state = self.mapped('subscription_ids.state')
+        now = datetime.now()
+
+        if self.recurring_intervals and self.subscription_ids:
+            if self.recurring_intervals == 'day':
+                start_date = datetime(now.year, now.month, now.day)
+                end_date = start_date + timedelta(days=1)
+
+            elif self.recurring_intervals == 'week':
+                start_date = datetime(now.year, now.month, now.day - 7)
+                end_date = start_date + timedelta(now.day)
+
+            elif self.recurring_intervals == 'month':
+                start_date = datetime(now.year, now.month, 1)
+                if now.month == 12:
+                    end_date = datetime(now.year + 1, 1, 1)
+                else:
+                    end_date = datetime(now.year, now.month + 1, 1)
+
+            elif self.recurring_intervals == 'year':
+                start_date = datetime(now.year, 1, 1)
+                end_date = datetime(now.year + 1, 1, 1)
+
+            query = """
+                        SELECT id
+                        FROM recurring_subscription
+                        WHERE create_date >= %s
+                        AND create_date < %s
+                        AND id = ANY(%s)
+                    """
+
+            params = (start_date, end_date, self.subscription_ids.ids)
+            self.env.cr.execute(query, params)
+            row = self.env.cr.fetchall()
+            ids = []
+            for row in row:
+                ids.append(row[0])
+
+            docs = self.env['recurring.subscription'].browse(ids)
+            print(docs)
+
+        elif self.recurring_intervals:
+            if self.recurring_intervals == 'day':
+                start_date = datetime(now.year, now.month, now.day)
+                end_date = start_date + timedelta(days=1)
+
+            elif self.recurring_intervals == 'week':
+                start_date = datetime(now.year, now.month, now.day - 7)
+                end_date = start_date + timedelta(now.day)
+
+            elif self.recurring_intervals == 'month':
+                start_date = datetime(now.year, now.month, 1)
+                if now.month == 12:
+                    end_date = datetime(now.year + 1, 1, 1)
+                else:
+                    end_date = datetime(now.year, now.month + 1, 1)
+
+            elif self.recurring_intervals == 'year':
+                start_date = datetime(now.year, 1, 1)
+                end_date = datetime(now.year + 1, 1, 1)
+
+            query = """
+                        SELECT id
+                        FROM recurring_subscription
+                        WHERE create_date >= %s
+                        AND create_date < %s
+                     """
+            params = (start_date, end_date)
+            self.env.cr.execute(query, params)
+            row = self.env.cr.fetchall()
+
+            ids = []
+            for row in row:
+                ids.append(row[0])
+
+            docs = self.env['recurring.subscription'].browse(ids)
+
+        elif self.subscription_ids:
+
+            query = """
+                        SELECT id
+                        FROM recurring_subscription
+                        WHERE id = ANY(%s)
+                    """
+
+            params = (self.subscription_ids.ids,)
+            self.env.cr.execute(query, params)
+            row = self.env.cr.fetchall()
+
+            ids = []
+            for row in row:
+                ids.append(row[0])
+
+            docs = self.env['recurring.subscription'].browse(ids)
+
+        else:
+            query = """
+                        SELECT id
+                        FROM recurring_subscription
+                    """
+            self.env.cr.execute(query)
+            row = self.env.cr.fetchall()
+            ids = []
+            for row in row:
+                ids.append(row[0])
+
+            docs = self.env['recurring.subscription'].browse(ids)
+
+        customers = docs.mapped('customer_id.name')
+        names = docs.mapped('name')
+        products = docs.mapped('product_id.name')
+        amount = docs.mapped('recurring_amount')
+        total_credit_applied = docs.mapped('total_credit_applied')
+        state = docs.mapped('state')
         recurring_intervals = self.recurring_intervals
 
         data = {
-            'model_id': self.id,
             'names': names,
             'customers': customers,
             'products': products,
@@ -61,15 +167,21 @@ class SubscriptionReportWizard(models.TransientModel):
             {'font_size': '12px', 'align': 'center', 'bold': True, 'shrink': True, })
         head = workbook.add_format(
             {'align': 'center', 'bold': True, 'font_size': '20px'})
-        txt = workbook.add_format({'font_size': '10px', 'align': 'center'})
-        sheet.merge_range('B2:I3', 'SUBSCRIPTION REPORT', head)
+        txt = workbook.add_format({'font_size': '10px', 'align': 'center', 'text_wrap': True})
+        sheet.merge_range('E2:I3', 'SUBSCRIPTION REPORT', head)
+        sheet.merge_range('G4:H5', self.env.user.company_id.name + ',' + self.env.user.company_id.street, txt)
         if data['recurring_intervals']:
             sheet.merge_range('A5:B5', 'Recurring Interval', cell_format)
             sheet.merge_range(f'C5:D5', data['recurring_intervals'], txt)
-        sheet.merge_range('A7:B7', 'Name', cell_format)
-        for i, name in enumerate(data['names'],
-                                 start=8):
-            sheet.merge_range(f'A{i}:B{i}', name, txt)
+        if len(data['names']) != 1:
+            sheet.merge_range('A7:B7', 'Name', cell_format)
+            for i, name in enumerate(data['names'],
+                                     start=8):
+                sheet.merge_range(f'A{i}:B{i}', name, txt)
+        else:
+            for i in data['names']:
+                sheet.merge_range('A4:B4', 'Name', cell_format)
+                sheet.merge_range('C4:D4', i, txt)
         sheet.merge_range('C7:D7', 'Customers', cell_format)
         for i, customer in enumerate(data['customers'],
                                      start=8):
