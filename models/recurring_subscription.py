@@ -22,7 +22,7 @@ class RecurringSubscription(models.Model):
     due_date = fields.Date(default=fields.Date.today() + relativedelta(days=+15))
     next_billing = fields.Date(string="Next Billing")
     is_lead = fields.Boolean(string="Lead")
-    customer_id = fields.Many2one('res.partner', string="Customer", tracking=True)
+    customer_id = fields.Many2one('res.partner', string="Customer",compute='_compute_customer_ids')
     description = fields.Char(string="Description")
     terms_and_conditions = fields.Html(string="Terms and Conditions")
     product_id = fields.Many2one('product.product', string="Product", required=True, tracking=True)
@@ -98,8 +98,8 @@ class RecurringSubscription(models.Model):
                  ('recurring_subscription_id.id', '=', record.id),
                  ('period_date', '<=', record.due_date)])
 
-    @api.onchange('establishment')
-    def _onchange_customer_ids(self):
+    @api.depends('establishment')
+    def _compute_customer_ids(self):
         """ Function to filter the customer_ids field in the recurring subscription model """
         for record in self:
             if record.establishment:
@@ -108,6 +108,8 @@ class RecurringSubscription(models.Model):
                     record.customer_id = partner.id
                 else:
                     raise ValidationError("Partner Not Found")
+            else:
+                record.customer_id = None
 
     def action_create_invoice(self):
         """ Create a button in Recurring Subscription “Confirm”, when click on that button, change the state into confirmed """
@@ -141,3 +143,4 @@ class RecurringSubscription(models.Model):
         template = self.env.ref(
             'recurring_subscription.email_template_recurring_done')
         template.send_mail(self.id, force_send=True, email_values=email_values)
+

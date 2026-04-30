@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="homepage_inherit_product_display"
+              inherit_id="website.homepage" name="Home" active="True">
+        <data inherit_id="website.homepage">
+            <xpath expr="//div[@id='wrap']" position="inside">
+                <section class="s_adventure pt184 pb200 oe_img_bg o_bg_img_center o_colored_level"
+                         style="background-image: url('/web/image/website.s_adventure_default_image');"
+                         data-oe-shape-data="{'shape': 'html_builder/Connections/04'}" data-snippet="s_adventure"
+                         data-name="Adventure" data-mimetype="image/jpeg">
+                    <div class="Home">
+                        <center>
+                            <h3>Recurring Subscription</h3>
+                        </center>
+                    </div>
+                    <div class="o_we_bg_filter bg-white-50"/>
+                    <div class="o_we_shape o_html_builder_Connections_04"/>
+                    <div class="container s_allow_columns">
+                        <h1 class="display-1" style="text-align: center;">
+                            <span class="display-4-fs">Embark on your</span>
+                            <br/>Next Adventure
+                        </h1>
+                        <p>
+                            <br/>
+                        </p>
+                        <p style="text-align: center;">
+                            <a class="btn btn-lg btn-primary o_translate_inline" href="/recurring-subscription">Start
+                                Now
+                            </a>
+                        </p>
+                    </div>
+                </section>
+            </xpath>
+        </data>
+    </template>
+</odoo>

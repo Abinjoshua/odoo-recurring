@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Menu Item to link to our new page -->
+        <record id="subscription_page_menu" model="website.menu">
+            <field name="name">Subscription</field>
+            <field name="url">/recurring-subscription</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">20</field>
+        </record>
+
+        <template id="recurring_subscription_template" name="Subscription">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="oe_structure">
+                        <div class="o_container_small">
+                            <br/>
+                            <h2 class="text-center">Create a Subscription</h2>
+                            <br/>
+                            <p class="text-center lead">Automated, scheduled transactions where customers authorize
+                                businesses to charge them at regular intervals (daily, weekly, monthly, or annually).
+                            </p>
+                            <form role="form" action="/create/subscription" method="POST">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <div data-name="Field"
+                                     class="s_website_form_field mb-3 col-12 s_website_form_custom s_website_form_required"
+                                     data-type="char" data-translated-name="Name">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-sm-auto s_website_form_label"
+                                               style="width: 200px" for="oy5z43z61698">
+                                            <span class="s_website_form_label_content">Name</span>
+                                            <span class="s_website_form_mark">*</span>
+                                        </label>
+                                        <div class="col-sm">
+                                            <input type="text" name="name" t-att-value="name" id="name"
+                                                   class="form-control" placeholder="e.g. Sub of Netflix"
+                                                   required="required"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div data-name="Field"
+                                     class="s_website_form_field mb-3 col-12 s_website_form_custom s_website_form_required"
+                                     data-type="char" data-translated-name="Product">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-sm-auto s_website_form_label"
+                                               style="width: 200px" for="oy5z43z61698">
+                                            <span class="s_website_form_label_content">Product</span>
+                                            <span class="s_website_form_mark">*</span>
+                                        </label>
+                                        <div class="col-sm">
+                                            <select name="product_id" class="form-control link-style">
+                                                <t t-foreach="product_rec" t-as="product">
+                                                    <option t-att-value="product.id" t-esc="product.name"/>
+                                                </t>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div data-name="Field"
+                                     class="s_website_form_field mb-3 col-12 s_website_form_custom s_website_form_required"
+                                     data-type="char" data-translated-name="Establishment">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-sm-auto s_website_form_label"
+                                               style="width: 200px" for="oy5z43z61698">
+                                            <span class="s_website_form_label_content">Establishment</span>
+                                            <span class="s_website_form_mark">*</span>
+                                        </label>
+                                        <div class="col-sm">
+                                            <input type="text" name="establishment"
+                                                   t-att-value="establishment" id="establishment"
+                                                   class="form-control"
+                                                   required="required"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div data-name="Field"
+                                     class="s_website_form_field mb-3 col-12 s_website_form_custom s_website_form_required"
+                                     data-type="char" data-translated-name="Recurring Amount">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-sm-auto s_website_form_label"
+                                               style="width: 200px" for="oy5z43z61698">
+                                            <span class="s_website_form_label_content">Recurring Amount
+                                            </span>
+                                            <span class="s_website_form_mark">*</span>
+                                        </label>
+                                        <div class="col-sm">
+                                            <input type="text" name="recurring_amount"
+                                                   t-att-value="recurring_amount" id="recurring_amount"
+                                                   class="form-control"
+                                                   required="required"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-0 py-2 col-12 s_website_form_submit s_website_form_no_submit_label text-end">
+                                    <button type="submit" class="btn btn-primary s_website_form_send">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+        <record id="subscription_thanks" model="website.page">
+            <field name="name">Success</field>
+            <field name="type">qweb</field>
+            <field name="url">/subscription-created-successfully</field>
+            <field name="website_published">True</field>
+            <field name="key">recurring_subscription.subscription_thanks</field>
+            <field name="arch" type="xml">
+                <t name="Success" t-name="recurring_subscription.subscription_thanks">
+                    <t t-call="website.layout">
+                        <div id="wrap">
+                            <div class="container">
+                                <h1>Success!</h1>
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <div class="alert alert-success" role="status">
+                                            The Subscription has been created successfully.
+                                        </div>
+                                        <a href="/">Go to Homepage</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </field>
+        </record>
+    </data>
+</odoo>

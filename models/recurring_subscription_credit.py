@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from openpyxl.worksheet import related
+
 from odoo import models, fields, api
 import re
 from odoo.exceptions import ValidationError
@@ -15,7 +17,7 @@ class RecurringSubscriptionCredit(models.Model):
 
     recurring_subscription_id = fields.Many2one('recurring.subscription', string="Recurring Subscription",
                                                 required=True)
-    partner_id = fields.Many2one(related='recurring_subscription_id.customer_id', string="Partner",store=True)
+    partner_id = fields.Many2one(related='recurring_subscription_id.customer_id',string="Partner")
     state = fields.Selection(
         [('pending', 'Pending'),
          ('confirmed', 'Confirmed'),

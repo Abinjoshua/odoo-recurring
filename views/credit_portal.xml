@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!--    Inheriting and adding credits to the my account portal    -->
+    <template id="portal_credits" name="Credits" inherit_id="portal.portal_my_home"
+              customize_show="True" priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <t t-set="portal_client_category_enable" t-value="True"/>
+            <t t-set="portal_vendor_category_enable" t-value="True"/>
+        </xpath>
+        <div id="portal_client_category" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/account/static/src/img/bill.svg'"/>
+                <t t-set="title">Credits</t>
+                <t t-set="url" t-value="'/view/credits'"/>
+                <t t-set="text">View or edit your credit here.</t>
+                <t t-set="placeholder_count" t-value="'invoice_count'"/>
+            </t>
+        </div>
+    </template>
+    <!--    Template for the breadcrumbs    -->
+    <template id="portal_my_home_menu_credits"
+              name="Portal layout : created credits entries "
+              inherit_id="portal.portal_breadcrumbs">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'credits_creation'"
+                class="breadcrumb-item active">
+                <span>Credits</span>
+            </li>
+        </xpath>
+    </template>
+    <!-- Template that define the structure of the table that will display the records in the custom menu.-->
+    <template id="portal_my_credits" name="My Credits">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Credits</t>
+            </t>
+            <div t-if="not credits" class="alert alert-warning" role="alert">
+                There are currently no credits created for your account.
+            </div>
+            <t t-if="credits" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th name="credit_amount">Credit Amount</th>
+                        <th name="recurring_subscription_id">Recurring Subscription</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="credits" t-as="credit">
+                        <tr>
+                            <td>
+                                <span t-field="credit.credit_amount"/>
+                            </td>
+                            <td>
+                                <span t-field="credit.recurring_subscription_id"/>
+                            </td>
+                            <td>
+                                <a role="button" href="/edit/credits" class="btn btn-link p-0 mt-3">
+                                    <i class="fa fa-pencil"/>
+                                </a>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </t>
+        </t>
+    </template>
+    <!--    Template for editing the existing record    -->
+    <template id="credits_edit_template" name="Credits Edit">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="oe_structure">
+                    <div class="o_container_small">
+                        <br/>
+                        <form role="form" action="/edit/credits" method="POST" edit="1">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <div data-name="Field"
+                                 class="s_website_form_field mb-3 col-12 s_website_form_custom s_website_form_required"
+                                 data-type="char" data-translated-name="Recurring Subscription Credit">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label"
+                                           style="width: 200px" for="oy5z43z61698">
+                                        <span class="s_website_form_label_content">Recurring Subscription Credit</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <select name="recurring_subscription_id" class="form-control link-style">
+                                            <t t-foreach="subscription_rec" t-as="subscription">
+                                                <option t-att-value="subscription.id" t-esc="subscription.name"/>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div data-name="Field"
+                                 class="s_website_form_field mb-3 col-12 s_website_form_custom s_website_form_required"
+                                 data-type="char" data-translated-name="Credit Amount">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label"
+                                           style="width: 200px" for="oy5z43z61698">
+                                        <span class="s_website_form_label_content">Credit Amount
+                                        </span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="text" name="credit_amount"
+                                               t-att-value="credit_amount" id="credit_amount"
+                                               class="form-control"
+                                               required="required"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-0 py-2 col-12 s_website_form_submit s_website_form_no_submit_label text-end">
+                                <button type="submit" class="btn btn-primary s_website_form_send">Save Changes</button>
+                                <a role="button" href="/view/credits" class="btn btn-secondary">
+                                    Discard
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
