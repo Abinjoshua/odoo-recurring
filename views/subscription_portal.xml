@@ -63,7 +63,7 @@
                                 <span t-field="subscription.recurring_amount"/>
                             </td>
                             <td>
-                                <a role="button" href="/edit/subscriptions" class="btn btn-link p-0 mt-3">
+                                <a role="button" href="/edit/subscriptions" class="btn btn-link p-0 mt-3" title="Edit this subscription">
                                     <i class="fa fa-pencil"/>
                                 </a>
                             </td>

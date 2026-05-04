@@ -30,6 +30,7 @@
          "views/website_form.xml",
          "views/website_credit_form.xml",
          "views/website_home_views.xml",
+         "views/website_billing_schedule.xml",
          "views/subscription_portal.xml",
          "views/credit_portal.xml",
          "views/recurring_partner_account.xml",
@@ -38,5 +39,10 @@
          "views/account_move_views.xml",
          "views/recurring_subscription_menu_views.xml",
          ],
+    "assets": {
+        "web.assets_frontend": [
+            "billing_schedule_page/static/src/js/website_m2m.js",
+        ],
     'demo': ['demo/subscription_product_demo.xml']
+    }
 }

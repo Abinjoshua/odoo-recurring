@@ -28,7 +28,7 @@
                                             <span class="s_website_form_mark">*</span>
                                         </label>
                                         <div class="col-sm">
-                                            <select name="recurring_subscription_id" class="form-control link-style">
+                                            <select name="recurring_subscription_ids" class="form-control link-style">
                                                 <t t-foreach="subscription_rec" t-as="subscription">
                                                     <option t-att-value="subscription.id" t-esc="subscription.name"/>
                                                 </t>
