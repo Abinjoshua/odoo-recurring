@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!--    Inheriting and adding subscription to the my account portal    -->
+    <template id="portal_subscriptions" name="Subscriptions" inherit_id="portal.portal_my_home"
+              customize_show="True" priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <t t-set="portal_client_category_enable" t-value="True"/>
+            <t t-set="portal_vendor_category_enable" t-value="True"/>
+        </xpath>
+        <div id="portal_client_category" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/account/static/src/img/bill.svg'"/>
+                <t t-set="title">Subscriptions</t>
+                <t t-set="url" t-value="'/view/subscriptions'"/>
+                <t t-set="text">View or edit your subscriptions here.</t>
+                <t t-set="placeholder_count" t-value="'invoice_count'"/>
+            </t>
+        </div>
+    </template>
+    <!--    Template for the breadcrumbs    -->
+    <template id="portal_my_home_menu_subscription"
+              name="Portal layout : created subscription entries "
+              inherit_id="portal.portal_breadcrumbs">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'subscriptions_creation'"
+                class="breadcrumb-item active">
+                <span>Subscription</span>
+            </li>
+        </xpath>
+    </template>
+    <!-- Template that define the structure of the table that will display the records in the custom menu.-->
+    <template id="portal_my_subscription" name="My Subscriptions">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Subscriptions</t>
+            </t>
+            <div t-if="not subscriptions" class="alert alert-warning" role="alert">
+                There are currently no subscriptions created for your account.
+            </div>
+            <t t-if="subscriptions" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th name="name">Name</th>
+                        <th name="product_id">Product</th>
+                        <th name="establishment">Establishment</th>
+                        <th name="recurring_amount">Recurring Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="subscriptions" t-as="subscription">
+                        <tr>
+                            <td>
+                                <span t-field="subscription.name"/>
+                            </td>
+                            <td>
+                                <span t-field="subscription.product_id"/>
+                            </td>
+                            <td>
+                                <span t-field="subscription.establishment"/>
+                            </td>
+                            <td>
+                                <span t-field="subscription.recurring_amount"/>
+                            </td>
+                            <td>
+                                <a role="button" t-att-href="'/edit/subscriptions/%s' % subscription.id"
+                                   class="btn btn-link p-0 mt-3"
+                                   title="Edit this subscription">
+                                    <i class="fa fa-pencil"/>
+                                </a>
+                            </td>
+                            <td>
+                                <span class="d-block border-start border-2 my-2"/>
+                                <a class="p-2 text-danger"
+                                   t-att-href="'/delete/subscriptions/%s' % subscription.id"
+                                   role="button"
+                                   title="Remove this address"
+                                >
+                                    <i class="fa fa-fw fa-trash"/>
+                                </a>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </t>
+        </t>
+    </template>
+    <!--    Template for editing the existing record    -->
+    <template id="subscription_edit_template" name="Subscription Edit">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="oe_structure">
+                    <div class="o_container_small">
+                        <br/>
+                        <form role="form" action="/edit/subscription" method="POST">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <input type="hidden" name="subscription_id" t-att-value="subscription.id"/>
+                            <div data-name="Field"
+                                 class="mb-3 col-12"
+                                 data-type="char" data-translated-name="Name">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label"
+                                           style="width: 200px" for="oy5z43z61698">
+                                        <span class="s_website_form_label_content">Name</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="text" name="name" t-att-value="subscription.name" id="name"
+                                               class="form-control" placeholder="e.g. Sub of Netflix"
+                                               required="required"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div data-name="Field"
+                                 class="mb-3 col-12"
+                                 data-type="char" data-translated-name="Product">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label"
+                                           style="width: 200px" for="oy5z43z61698">
+                                        <span class="s_website_form_label_content">Product</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <select name="product_id" class="form-control link-style">
+                                            <t t-foreach="products" t-as="product">
+                                                <option t-att-value="product.id"
+                                                        t-att-selected="'selected if product.id == subscription.product_id.id else None'">
+                                                    <t t-esc="product.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div data-name="Field"
+                                 class="mb-3 col-12"
+                                 data-type="char" data-translated-name="Establishment">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label"
+                                           style="width: 200px" for="oy5z43z61698">
+                                        <span class="s_website_form_label_content">Establishment</span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="text" name="establishment"
+                                               t-att-value="subscription.establishment" id="establishment"
+                                               class="form-control"
+                                               required="required"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div data-name="Field"
+                                 class="mb-3 col-12"
+                                 data-type="char" data-translated-name="Recurring Amount">
+                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                    <label class="col-form-label col-sm-auto s_website_form_label"
+                                           style="width: 200px" for="oy5z43z61698">
+                                        <span class="s_website_form_label_content">Recurring Amount
+                                        </span>
+                                        <span class="s_website_form_mark">*</span>
+                                    </label>
+                                    <div class="col-sm">
+                                        <input type="text" name="recurring_amount"
+                                               t-att-value="subscription.recurring_amount" id="recurring_amount"
+                                               class="form-control"
+                                               required="required"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-0 py-2 col-12 text-end">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                <a role="button" href="/view/subscriptions" class="btn btn-secondary">
+                                    Discard
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

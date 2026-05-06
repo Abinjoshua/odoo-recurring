@@ -13,6 +13,11 @@ class Subscription(http.Controller):
 
     @http.route('/create/credit', type='http', auth='public', website=True)
     def create_subscription_credit(self, **kwargs):
-        request.env['recurring.subscription.credit'].sudo().create(kwargs)
-        return request.render('recurring_subscription.subscription_thanks', {})
+        request.env['recurring.subscription.credit'].sudo().create(
+            {
+            'recurring_subscription_id': int(kwargs.get('recurring_subscription_id')),
+            'credit_amount': kwargs.get('credit_amount'),
+            }
+        )
+        return request.redirect('/credit-created-successfully')
 

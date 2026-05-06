@@ -6,7 +6,7 @@ import re
 from odoo.exceptions import ValidationError
 from datetime import timedelta
 
-from odoo.orm.decorators import readonly
+from odoo.orm.decorators import readonly, ondelete
 
 
 class RecurringSubscriptionCredit(models.Model):
@@ -16,7 +16,7 @@ class RecurringSubscriptionCredit(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     recurring_subscription_id = fields.Many2one('recurring.subscription', string="Recurring Subscription",
-                                                required=True)
+                                                required=True,ondelete='cascade')
     partner_id = fields.Many2one(related='recurring_subscription_id.customer_id',string="Partner")
     state = fields.Selection(
         [('pending', 'Pending'),
