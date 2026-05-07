@@ -43,6 +43,7 @@
                     <tr class="active">
                         <th name="credit_amount">Credit Amount</th>
                         <th name="recurring_subscription_id">Recurring Subscription</th>
+                        <th name="state">State</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,10 +56,31 @@
                                 <span t-field="credit.recurring_subscription_id"/>
                             </td>
                             <td>
+                                <span t-if="credit.state != 'pending'" t-field="credit.state"/>
+                                <a t-if="credit.state == 'pending'"
+                                   role="button"
+                                   t-att-href="'/edit/confirm-credit/%s' % credit.id"
+                                   class=" btn btn-outline-primary btn-sm"
+                                   title="Confirm the credit"
+                                >
+                                    <i class="oi me-2"/>Confirm
+                                </a>
+                            </td>
+                            <td>
                                 <a role="button" t-att-href="'/edit/credits/%s' % credit.id"
                                    class="btn btn-link p-0 mt-3"
                                    title="Edit this credit">
                                     <i class="fa fa-pencil"/>
+                                </a>
+                            </td>
+                            <td>
+                                <span class="d-block border-start border-2 my-2"/>
+                                <a class="p-2 text-danger"
+                                   t-att-href="'/delete/credit/%s' % credit.id"
+                                   role="button"
+                                   title="Remove this credit"
+                                >
+                                    <i class="fa fa-fw fa-trash"/>
                                 </a>
                             </td>
                         </tr>
@@ -90,7 +112,7 @@
                                         <select name="recurring_subscription_id" class="form-control link-style">
                                             <t t-foreach="subscriptions" t-as="subscription">
                                                 <option t-att-value="subscription.id"
-                                                        t-att-selected="'selected if subscription.id == credit.recurring_subscription_id.id else None'">
+                                                        t-att-selected="'selected' if subscription.id == credit.recurring_subscription_id.id else None">
                                                     <t t-esc="subscription.name"/>
                                                 </option>
                                             </t>

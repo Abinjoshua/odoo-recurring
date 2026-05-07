@@ -3,7 +3,7 @@ from odoo import http
 from odoo.http import request
 
 
-class Subscription(http.Controller):
+class SubscriptionPortal(http.Controller):
 
     @http.route('/view/subscriptions', type='http', auth='public', website=True)
     def view_subscription(self, **kwargs):
@@ -31,6 +31,7 @@ class Subscription(http.Controller):
             'product_id': int(kwargs.get('product_id')),
             'establishment': kwargs.get('establishment'),
             'recurring_amount': kwargs.get('recurring_amount'),
+            'state': kwargs.get('state'),
         })
 
         return request.redirect('/view/subscriptions')
@@ -40,4 +41,11 @@ class Subscription(http.Controller):
         subscription = request.env['recurring.subscription'].sudo().browse(sub_id)
         subscription.unlink()
         return request.redirect('/view/subscriptions')
+
+    @http.route('/edit/confirm-subscription/<int:confirm_id>', type='http', auth='user', website=True)
+    def confirm_subscription(self, confirm_id, **kwargs):
+        subscription = request.env['recurring.subscription'].sudo().browse(confirm_id)
+        subscription.write({'state': 'confirm'})
+        return request.redirect('/view/subscriptions')
+
 

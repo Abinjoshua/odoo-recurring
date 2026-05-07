@@ -31,6 +31,7 @@
          "views/website_credit_form.xml",
          "views/website_home_views.xml",
          "views/website_billing_schedule.xml",
+         "views/website_billing_schedule_portal.xml",
          "views/subscription_portal.xml",
          "views/credit_portal.xml",
          "views/recurring_partner_account.xml",

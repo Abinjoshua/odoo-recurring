@@ -45,6 +45,7 @@
                         <th name="product_id">Product</th>
                         <th name="establishment">Establishment</th>
                         <th name="recurring_amount">Recurring Amount</th>
+                        <th name="recurring_amount">State</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -63,6 +64,17 @@
                                 <span t-field="subscription.recurring_amount"/>
                             </td>
                             <td>
+                                <span t-if="subscription.state != 'draft'" t-field="subscription.state"/>
+                                <a t-if="subscription.state == 'draft'"
+                                   role="button"
+                                   t-att-href="'/edit/confirm-subscription/%s' % subscription.id"
+                                   class=" btn btn-outline-primary btn-sm"
+                                   title="Confirm the subscription"
+                                >
+                                    <i class="oi me-2"/>Confirm
+                                </a>
+                            </td>
+                            <td>
                                 <a role="button" t-att-href="'/edit/subscriptions/%s' % subscription.id"
                                    class="btn btn-link p-0 mt-3"
                                    title="Edit this subscription">
@@ -74,7 +86,7 @@
                                 <a class="p-2 text-danger"
                                    t-att-href="'/delete/subscriptions/%s' % subscription.id"
                                    role="button"
-                                   title="Remove this address"
+                                   title="Remove this subscription"
                                 >
                                     <i class="fa fa-fw fa-trash"/>
                                 </a>
@@ -179,4 +191,30 @@
             </div>
         </t>
     </template>
+    <record id="invoice_success" model="website.page">
+        <field name="name">Invoice Success</field>
+        <field name="type">qweb</field>
+        <field name="url">/invoice-created-successfully</field>
+        <field name="website_published">True</field>
+        <field name="key">recurring_subscription.invoice_success</field>
+        <field name="arch" type="xml">
+            <t name="Success" t-name="recurring_subscription.invoice_success">
+                <t t-call="website.layout">
+                    <div id="wrap">
+                        <div class="container">
+                            <h1>Success!</h1>
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <div class="alert alert-success" role="status">
+                                        The Invoice has been created successfully.
+                                    </div>
+                                    <a href="/">Go to Homepage</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </field>
+    </record>
 </odoo>
