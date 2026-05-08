@@ -16,14 +16,15 @@ class RecurringSubscriptionCredit(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     recurring_subscription_id = fields.Many2one('recurring.subscription', string="Recurring Subscription",
-                                                required=True,ondelete='cascade')
-    partner_id = fields.Many2one(related='recurring_subscription_id.customer_id',string="Partner")
+                                                required=True, ondelete='cascade')
+    partner_id = fields.Many2one(related='recurring_subscription_id.customer_id', string="Partner")
     state = fields.Selection(
         [('pending', 'Pending'),
          ('confirmed', 'Confirmed'),
          ('first_approved', 'First approved'),
          ('fully_approved', 'Fully approved'),
-         ('rejected', 'Rejected')], default='pending')
+         ('rejected', 'Rejected'), ('confirm_requested', 'Confirm Requested'),
+         ('delete_requested', 'Delete Requested')], default='pending')
 
     currency_id = fields.Many2one(related='recurring_subscription_id.currency_id', string="Currency")
     recurring_amount = fields.Monetary(related='recurring_subscription_id.recurring_amount', string="Recurring Amount",
@@ -34,7 +35,8 @@ class RecurringSubscriptionCredit(models.Model):
     credit_amount = fields.Float(string="Credit Amount", default=1)
     period_date = fields.Date(string="Period Date")
     billing_schedule_id = fields.Many2one('recurring.billing.schedule', string="Billing Schedule")
-    amount_pending = fields.Float(string="Amount Pending",related='recurring_subscription_id.amount_pending',store=True)
+    amount_pending = fields.Float(string="Amount Pending", related='recurring_subscription_id.amount_pending',
+                                  store=True)
 
     @api.constrains('establishment')
     def _check_establishment(self):

@@ -35,41 +35,17 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div data-name="Field"
-                                     class="s_website_form_field mb-3 col-12 s_website_form_custom s_website_form_required"
-                                     data-type="char"
-                                     data-translated-name="Recurring Subscription">
-                                    <div class="row s_col_no_resize s_col_no_bgcolor">
-                                        <label class="col-form-label col-sm-auto s_website_form_label"
-                                               style="width: 200px" for="oy5z43z61698">
-                                            <span class="s_website_form_label_content">
-                                                Recurring Subscription
-                                            </span>
-                                            <span class="s_website_form_mark">*</span>
-                                        </label>
-                                        <div class="col-sm">
-                                            <select name="recurring_subscription_ids"
-                                                    class="form-control link-style">
-                                                <t t-foreach="subscription_rec"
-                                                   t-as="subscription">
-                                                    <option t-att-value="subscription.id"
-                                                            t-esc="subscription.name"/>
-                                                </t>
-                                            </select>
-                                        </div>
-                                    </div>
+                                <div class="form-group mt-3">
+                                    <label for="recurring_subscription_ids">Recurring Subscription</label>
+                                    <select name="recurring_subscription_ids" id="recurring_subscription_ids"
+                                            class="form-control" multiple="multiple">
+                                        <t t-foreach="subscription_rec" t-as="subscription">
+                                            <option t-att-value="subscription.id">
+                                                <t t-esc="subscription.name"/>
+                                            </option>
+                                        </t>
+                                    </select>
                                 </div>
-                                <!--                                <div class="form-group mt-3">-->
-                                <!--                                    <label for="recurring_subscription_ids">Recurring Subscription</label>-->
-                                <!--                                    <select name="recurring_subscription_ids" id="recurring_subscription_ids"-->
-                                <!--                                            class="form-control" multiple="multiple">-->
-                                <!--                                        <t t-foreach="subscription_rec" t-as="subscription">-->
-                                <!--                                            <option t-att-value="subscription.id">-->
-                                <!--                                                <t t-esc="subscription.name"/>-->
-                                <!--                                            </option>-->
-                                <!--                                        </t>-->
-                                <!--                                    </select>-->
-                                <!--                                </div>-->
                                 <div class="mb-0 py-2 col-12 s_website_form_submit s_website_form_no_submit_label text-end">
                                     <button type="submit" class="btn btn-primary s_website_form_send">Submit</button>
                                 </div>

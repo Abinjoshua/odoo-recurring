@@ -23,7 +23,6 @@ class Subscription(http.Controller):
             'subscriptions': subscriptions,
         })
 
-
     @http.route('/edit/credit', type='http', auth='public', website=True, methods=['POST'])
     def update_credit_form(self, **post):
         credit_id = int(post.get('credit_id'))
@@ -34,14 +33,23 @@ class Subscription(http.Controller):
         })
         return request.redirect('/view/credits')
 
-    @http.route('/delete/credit/<int:credit_id>', type='http', auth='public', website=True)
-    def delete_credit(self, credit_id, **kwargs):
-        subscription = request.env['recurring.subscription.credit'].sudo().browse(credit_id)
-        subscription.unlink()
-        return request.redirect('/view/credits')
-
     @http.route('/edit/confirm-credit/<int:confirm_id>', type='http', auth='user', website=True)
     def confirm_credit(self, confirm_id, **kwargs):
         credit = request.env['recurring.subscription.credit'].sudo().browse(confirm_id)
         credit.write({'state': 'confirmed'})
+        return request.redirect('/view/credits')
+
+    @http.route('/delete-credit/<int:credit_id>', type='http', auth='user', website=True)
+    def delete_credit(self, credit_id, **kwargs):
+        credit = request.env['recurring.subscription.credit'].sudo().browse(credit_id)
+        credit.unlink()
+        return request.redirect('/view/credits')
+
+    @http.route('/delete-request/credit/<int:credit_id>', type='http', auth='public', website=True)
+    def delete_request_credit(self, credit_id, **kwargs):
+        credit = request.env['recurring.subscription.credit'].sudo().browse(credit_id)
+        if request.env.user.has_group('recurring_subscription.group_subscription_manager'):
+            credit.unlink()
+        elif request.env.user.has_group('recurring_subscription.group_subscription_user'):
+            credit.write({'state': 'delete_requested'})
         return request.redirect('/view/credits')

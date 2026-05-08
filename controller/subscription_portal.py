@@ -36,16 +36,35 @@ class SubscriptionPortal(http.Controller):
 
         return request.redirect('/view/subscriptions')
 
-    @http.route('/delete/subscriptions/<int:sub_id>', type='http', auth='public', website=True)
+    @http.route('/delete-request/subscriptions/<int:sub_id>', type='http', auth='public', website=True)
     def delete_subscriptions(self,sub_id, **kwargs):
         subscription = request.env['recurring.subscription'].sudo().browse(sub_id)
-        subscription.unlink()
+        if request.env.user.has_group('recurring_subscription.group_subscription_manager'):
+            subscription.unlink()
+        elif request.env.user.has_group('recurring_subscription.group_subscription_user'):
+            subscription.write({'state': 'delete_requested'})
         return request.redirect('/view/subscriptions')
 
     @http.route('/edit/confirm-subscription/<int:confirm_id>', type='http', auth='user', website=True)
     def confirm_subscription(self, confirm_id, **kwargs):
         subscription = request.env['recurring.subscription'].sudo().browse(confirm_id)
+        if request.env.user.has_group('recurring_subscription.group_subscription_manager'):
+            subscription.write({'state': 'confirm'})
+        elif request.env.user.has_group('recurring_subscription.group_subscription_user'):
+            subscription.write({'state': 'confirm_requested'})
+        return request.redirect('/view/subscriptions')
+
+    @http.route('/approve-request-subscription/<int:confirm_id>', type='http', auth='user', website=True)
+    def approve_subscription(self, confirm_id, **kwargs):
+        subscription = request.env['recurring.subscription'].sudo().browse(confirm_id)
         subscription.write({'state': 'confirm'})
         return request.redirect('/view/subscriptions')
+
+    @http.route('/delete-subscription/<int:confirm_id>', type='http', auth='user', website=True)
+    def delete_subscription(self, confirm_id, **kwargs):
+        subscription = request.env['recurring.subscription'].sudo().browse(confirm_id)
+        subscription.unlink()
+        return request.redirect('/view/subscriptions')
+
 
 

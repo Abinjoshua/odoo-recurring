@@ -11,10 +11,10 @@ class BillingSchedule(http.Controller):
             'subscription_rec': subscription_rec,
         })
 
-    # @http.route('/create/billing-schedule', type='http', auth='public', website=True)
-    # def create_subscription(self, **kwargs):
-    #     request.env['recurring.billing.schedule'].sudo().create({    'name': kwargs.get('name'),
-    #         'recurring_subscription_ids': int(kwargs.get('recurring_subscription_ids')),
-    #     })
-    #     return request.render('recurring_subscription.billing_schedule_thanks')
-
+    @http.route('/create/billing-schedule', type='http', auth='public', website=True)
+    def create_subscription(self, **kwargs):
+        request.env['recurring.billing.schedule'].sudo().create({
+            'name': kwargs.get('name'),
+            'recurring_subscription_ids': request.httprequest.form.getlist('recurring_subscription_ids'),
+        })
+        return request.render('recurring_subscription.billing_schedule_thanks')

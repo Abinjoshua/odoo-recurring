@@ -64,7 +64,6 @@
                                 <span t-field="subscription.recurring_amount"/>
                             </td>
                             <td>
-                                <span t-if="subscription.state != 'draft'" t-field="subscription.state"/>
                                 <a t-if="subscription.state == 'draft'"
                                    role="button"
                                    t-att-href="'/edit/confirm-subscription/%s' % subscription.id"
@@ -73,6 +72,20 @@
                                 >
                                     <i class="oi me-2"/>Confirm
                                 </a>
+                                <a t-elif="subscription.state == 'confirm_requested' and request.env.user.has_group('recurring_subscription.group_subscription_manager')"
+                                   role="button"
+                                   t-att-href="'/approve-request-subscription/%s' % subscription.id"
+                                   class=" btn btn-outline-primary btn-sm"
+                                   title="Confirm the subscription"
+                                >
+                                    <i class="oi me-2"/>Approve
+                                </a>
+                                <span t-elif="subscription.state == 'confirm_requested' and request.env.user.has_group('recurring_subscription.group_subscription_user')"
+                                      class="badge rounded-pill text-bg-info">
+                                    <i aria-label="confirm_approval" title="Waiting For Approval" role="img"/>
+                                    <span class="d-none d-md-inline">Waiting For Approval</span>
+                                </span>
+                                <span t-else="" t-field="subscription.state"/>
                             </td>
                             <td>
                                 <a role="button" t-att-href="'/edit/subscriptions/%s' % subscription.id"
@@ -82,9 +95,22 @@
                                 </a>
                             </td>
                             <td>
-                                <span class="d-block border-start border-2 my-2"/>
-                                <a class="p-2 text-danger"
-                                   t-att-href="'/delete/subscriptions/%s' % subscription.id"
+                                <span t-if="subscription.state == 'delete_requested' and not request.env.user.has_group('recurring_subscription.group_subscription_manager')"
+                                      class="badge rounded-pill text-bg-info">
+                                    <i aria-label="confirm_deletion" title="Waiting For Deletion" role="img"/>
+                                    <span class="d-none d-md-inline">Waiting For Deletion</span>
+                                </span>
+                                <a t-elif="subscription.state == 'delete_requested' and request.env.user.has_group('recurring_subscription.group_subscription_manager')"
+                                   role="button"
+                                   t-att-href="'/delete-subscription/%s' % subscription.id"
+                                   class=" btn btn-outline-primary btn-sm"
+                                   title="Confirm the delete"
+                                >
+                                    <i class="oi me-2"/>Confirm Delete
+                                </a>
+                                <a t-elif="subscription.state != 'delete_requested'"
+                                   class="p-2 text-danger"
+                                   t-att-href="'/delete-request/subscriptions/%s' % subscription.id"
                                    role="button"
                                    title="Remove this subscription"
                                 >

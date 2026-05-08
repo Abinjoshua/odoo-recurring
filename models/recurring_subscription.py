@@ -30,7 +30,7 @@ class RecurringSubscription(models.Model):
     recurring_amount = fields.Monetary(string="Recurring Amount", currency_field="currency_id", required=True,
                                        default=1)
     state = fields.Selection(
-        [('draft', 'Draft'), ('confirm', 'Confirm'), ('done', 'Done'), ('cancel', 'Cancel')], string="State",
+        [('draft', 'Draft'), ('confirm', 'Confirm'), ('done', 'Done'), ('cancel', 'Cancel'),('confirm_requested','Confirm Requested'),('delete_requested','Delete Requested')], string="State",
         default='draft')
     order = fields.Char("Sequence", default=lambda self: _('New'),
                         copy=False, readonly=True, tracking=True)

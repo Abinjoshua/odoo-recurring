@@ -74,11 +74,24 @@
                                 </a>
                             </td>
                             <td>
-                                <span class="d-block border-start border-2 my-2"/>
-                                <a class="p-2 text-danger"
-                                   t-att-href="'/delete/credit/%s' % credit.id"
+                                <span t-if="credit.state == 'delete_requested' and not request.env.user.has_group('recurring_subscription.group_subscription_manager')"
+                                      class="badge rounded-pill text-bg-info">
+                                    <i aria-label="confirm_deletion" title="Waiting For Deletion" role="img"/>
+                                    <span class="d-none d-md-inline">Waiting For Deletion</span>
+                                </span>
+                                <a t-elif="credit.state == 'delete_requested' and request.env.user.has_group('recurring_subscription.group_subscription_manager')"
                                    role="button"
-                                   title="Remove this credit"
+                                   t-att-href="'/delete-credit/%s' % credit.id"
+                                   class=" btn btn-outline-primary btn-sm"
+                                   title="Confirm the delete"
+                                >
+                                    <i class="oi me-2"/>Confirm Delete
+                                </a>
+                                <a t-elif="credit.state != 'delete_requested'"
+                                   class="p-2 text-danger"
+                                   t-att-href="'/delete-request/credit/%s' % credit.id"
+                                   role="button"
+                                   title="Remove this billing schedule"
                                 >
                                     <i class="fa fa-fw fa-trash"/>
                                 </a>

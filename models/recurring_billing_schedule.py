@@ -9,6 +9,7 @@ class RecurringBillingSchedule(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string="Billing Schedule", required=True)
+    state = fields.Selection([('draft', 'Draft'),('delete_requested', 'Delete Requested'),('confirm_requested','Confirm Requested')],default='draft')
     simulation = fields.Boolean(default=False)
     period = fields.Date(default=fields.Date.today, required=True)
     restrict_customers_ids = fields.Many2many('res.partner', compute='_compute_total_restrict_customers')

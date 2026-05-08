@@ -7,9 +7,9 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_confirm" type="object" string="Confirm" invisible="state=='done'"
+                    <button name="action_confirm" type="object" string="Confirm" invisible="state in ['done','confirm'] "
                             class="btn-primary"/>
-                    <button name="action_cancel" type="object" string="Cancel" invisible="state=='done'"/>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state in ['done','cancel']"/>
                     <button name="action_done" type="object" string="Done" invisible="state=='done'"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
                 </header>
