@@ -39,6 +39,13 @@
          "views/crm_lead_views.xml",
          "views/account_move_views.xml",
          "views/recurring_subscription_menu_views.xml",
+         "views/snippets/basic_snippet.xml",
          ],
-    'demo': ['demo/subscription_product_demo.xml']
+    'demo': ['demo/subscription_product_demo.xml'],
+    'assets':{
+        'web.assets_frontend':[
+            "recurring_subscription/static/src/xml/product_snippet.xml",
+            "recurring_subscription/static/src/js/product_category_snippet.js"
+        ]
+    }
 }

@@ -41,6 +41,7 @@ class RecurringSubscription(models.Model):
                                               compute='_compute_subscription_credit_ids')
     total_credit_applied = fields.Float(string="Total Credit Applied",compute='_compute_total_credit_applied',store=True)
     amount_pending = fields.Float(string="Amount Pending",compute='_compute_amount_pending',store=True)
+    image = fields.Image(string="Subscription Image")
 
     @api.depends('recurring_amount','total_credit_applied')
     def _compute_amount_pending(self):
