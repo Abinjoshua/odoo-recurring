@@ -22,7 +22,7 @@ class RecurringSubscription(models.Model):
     due_date = fields.Date(default=fields.Date.today() + relativedelta(days=+15))
     next_billing = fields.Date(string="Next Billing")
     is_lead = fields.Boolean(string="Lead")
-    customer_id = fields.Many2one('res.partner', string="Customer",compute='_compute_customer_ids')
+    customer_id = fields.Many2one('res.partner', string="Customer",compute='_compute_customer_ids',store=True)
     description = fields.Char(string="Description")
     terms_and_conditions = fields.Html(string="Terms and Conditions")
     product_id = fields.Many2one('product.product', string="Product", required=True, tracking=True)

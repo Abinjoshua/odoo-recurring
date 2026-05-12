@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--Product Category tab content template-->
+<templates xml:space="preserve">
+    <t t-name="dynamic_snippet.credit_data">
+        <section class="categories_section">
+            <div class="container">
+                <h3 class="section_heading" style="text-align:center">Latest Credits</h3>
+                <div class="s_dynamic_snippet_row row g-3">
+                    <t t-foreach="result.credits" t-as="credit" t-key="credit.id">
+                        <div class="categories">
+                            <div class="img_wrapper">
+                                <a t-att-href="credit.link">
+                                <t t-if="credit.image">
+                                    <img t-att-src="'data:image/png;base64,' + credit.image"
+                                         class="img img-fluid rotate-center"
+                                         t-att-alt="credit.recurring_subscription_id or 'Category Image'"
+                                         loading="lazy"/>
+                                </t>
+                                <t t-else="">
+                                    <img src="/theme_og_store/static/src/img/default_category.svg"
+                                         class="img img-fluid rotate-center"
+                                         t-att-alt="credit.recurring_subscription_id.name"
+                                         loading="lazy"/>
+                                </t>
+                                </a>
+                            </div>
+                            <div class="type">
+                                <t t-esc="credit.recurring_subscription_id"/>
+                            </div>
+                        </div>
+                        <br/>
+                    </t>
+                </div>
+            </div>
+        </section>
+    </t>
+</templates>

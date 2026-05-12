@@ -44,8 +44,8 @@
     'demo': ['demo/subscription_product_demo.xml'],
     'assets':{
         'web.assets_frontend':[
-            "recurring_subscription/static/src/xml/product_snippet.xml",
-            "recurring_subscription/static/src/js/product_category_snippet.js"
+            "recurring_subscription/static/src/xml/latest_credit_snippet.xml",
+            "recurring_subscription/static/src/js/latest_credit_snippet.js"
         ]
     }
 }
