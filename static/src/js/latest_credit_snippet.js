@@ -7,7 +7,13 @@ publicWidget.registry.get_product_tab = publicWidget.Widget.extend({
    async willStart() {
        const result = await rpc('/get_latest_credits', {});
        if(result){
-           this.$target.empty().html(renderToElement('dynamic_snippet.credit_data', {result: result}))
+           const chunks = [];
+           let carousel_id = Math.random()
+           for (let i = 0; i < result.credits.length; i +=4) {
+               chunks.push(result.credits.slice(i, i+4))
+           }
+           chunks[0].is_active = true;
+           this.$target.empty().html(renderToElement('dynamic_snippet.credit_data', {chunks: chunks,carousel_id:carousel_id}))
        }
    },
 });

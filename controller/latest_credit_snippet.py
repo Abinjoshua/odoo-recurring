@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import random
 from odoo import http
 from odoo.http import request
 
@@ -21,7 +22,7 @@ class WebsiteProduct(http.Controller):
             link = '/edit/subscriptions/' + id
             credit['link'] = link
         values = {
-            'credits': credits,
+            'credits': credits
         }
 
         return values

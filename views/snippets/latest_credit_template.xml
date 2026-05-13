@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="category_recurring_subscirption" name="Recurring Subscription">
+        <section class="categories_section">
+            <div class="container">
+                <div class="alert alert-info">
+                    <h4>Recurring Subscription
+                        Please save to view the snippet
+                    </h4>
+                </div>
+            </div>
+        </section>
+    </template>
+    <template id="category_recent_credits" inherit_id="website.snippets"
+              name="Recent Credits">
+        <xpath expr="//snippets[@id='snippet_groups']" position="inside">
+            <t t-snippet="recurring_subscription.category_recurring_subscirption"
+               t-thumbnail="/recurring_subscription/static/src/cred_snippet.png"/>
+        </xpath>
+        <xpath expr="//snippets[@id='snippet_structure']" position="inside">
+            <t t-snippet="recurring_subscription.category_recurring_subscirption"/>
+        </xpath>
+    </template>
+</odoo>

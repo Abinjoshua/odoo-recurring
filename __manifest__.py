@@ -28,6 +28,7 @@
          "wizard/subscription_credit_report_views.xml",
          "views/recurring_billing_schedule_views.xml",
          "views/website_form.xml",
+         "views/add_to_cart_form.xml",
          "views/website_credit_form.xml",
          "views/website_home_views.xml",
          "views/website_billing_schedule.xml",
@@ -39,7 +40,7 @@
          "views/crm_lead_views.xml",
          "views/account_move_views.xml",
          "views/recurring_subscription_menu_views.xml",
-         "views/snippets/basic_snippet.xml",
+         "views/snippets/latest_credit_template.xml",
          ],
     'demo': ['demo/subscription_product_demo.xml'],
     'assets':{

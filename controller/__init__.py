@@ -7,3 +7,4 @@ from . import credit_portal
 from . import billing_schedule
 from . import billing_schedule_portal
 from . import latest_credit_snippet
+from . import add_to_cart

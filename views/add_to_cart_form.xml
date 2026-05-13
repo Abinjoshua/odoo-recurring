@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Menu Item to link to our new page -->
+        <record id="add_to_cart_page_menu" model="website.menu">
+            <field name="name">Add To Cart</field>
+            <field name="url">/cart</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">20</field>
+        </record>
+
+        <template id="add_to_cart_template" name="Add To Cart">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="oe_structure">
+                        <div class="o_container_small">
+                            <br/>
+                            <h2 class="text-center">Add To Cart</h2>
+                            <br/>
+                            <form role="form" action="/add-to-cart" method="POST">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <div data-name="Field"
+                                     class="mb-3 col-12"
+                                     data-type="char" data-translated-name="Product">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-sm-auto s_website_form_label"
+                                               style="width: 200px" for="oy5z43z61698">
+                                            <span class="s_website_form_label_content">Product</span>
+                                            <span class="s_website_form_mark">*</span>
+                                        </label>
+                                        <div class="col-sm">
+                                            <select name="product_id" class="form-control link-style" multiple="multiple">
+                                                <t t-foreach="product_rec" t-as="product">
+                                                    <option t-att-value="product.id" t-esc="product.name"/>
+                                                </t>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-0 py-2 col-12 text-end">
+                                    <button type="submit" class="btn btn-primary s_website_form_send">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>
